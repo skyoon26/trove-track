@@ -1,13 +1,17 @@
 import React from 'react'
-import { Navbar, Container, Offcanvas, NavDropdown, Nav, Form, Button } from 'react-bootstrap';
+import { Navbar, Container, Offcanvas, Nav } from 'react-bootstrap';
+import './offcanvas-navbar.css';
 
 const OffcanvasNavbar = () => {
   return (
     <Navbar expand={false} className="bg-body-tertiary mb-3">
       <Container fluid>
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center justify-content-between w-100">
           <Navbar.Toggle aria-controls="offcanvasNavbar" />
-          <Navbar.Brand href="#" className='mx-2'>Menu</Navbar.Brand>
+          <Navbar.Brand href="#" className='d-none d-md-inline mx-2'>Menu</Navbar.Brand>
+          <div className="text-center flex-grow-1">
+            <Navbar.Brand id="troveTrackNavLink" href="#">TroveTrack</Navbar.Brand>
+          </div>
         </div>
         <Navbar.Offcanvas
           id="offcanvasNavbar"
