@@ -1,10 +1,9 @@
-import React from 'react'
 import { Navbar, Container, Offcanvas, Nav } from 'react-bootstrap';
 import './offcanvas-navbar.css';
 
 const OffcanvasNavbar = () => {
   return (
-    <Navbar expand={false} className="bg-body-tertiary mb-3">
+    <Navbar expand={false} className="bg-body-tertiary">
       <Container fluid>
         <div className="d-flex align-items-center justify-content-between w-100">
           <Navbar.Toggle aria-controls="offcanvasNavbar" />
