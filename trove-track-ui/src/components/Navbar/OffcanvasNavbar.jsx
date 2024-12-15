@@ -3,7 +3,7 @@ import './offcanvas-navbar.css';
 
 const OffcanvasNavbar = () => {
   return (
-    <Navbar expand={false} className="bg-body-tertiary">
+    <Navbar expand={false} sticky="top" className="navbar">
       <Container fluid>
         <div className="d-flex align-items-center justify-content-between w-100">
           <Navbar.Toggle aria-controls="offcanvasNavbar" />
