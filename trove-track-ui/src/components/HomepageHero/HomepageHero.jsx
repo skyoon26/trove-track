@@ -2,7 +2,7 @@ import './homepage-hero.css';
 
 const HomepageHero = () => {
   return (
-    <div id="homepageHeroBackground" className="p-5">
+    <div className="p-5 homepage-hero-section">
       <div className="container homepage-hero-text">
         <h1 className="display-5 fw-bold">Welcome to TroveTrack.</h1>
         <h2></h2>
