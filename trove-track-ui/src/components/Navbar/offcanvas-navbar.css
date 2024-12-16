@@ -3,7 +3,11 @@
   font-size: 2rem;
 }
 
-.navbar {
-  background-color: rgba(217, 236, 252, 0.9);
-  color: white;
+.offcanvas-navbar-section {
+  background-color: transparent;
+  transition: background-color 0.3s ease;
+}
+
+.navbar.scrolled {
+  background-color: rgb(205, 227, 253);
 }

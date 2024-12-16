@@ -1,9 +1,28 @@
+import { useEffect, useState } from 'react';
 import { Navbar, Container, Offcanvas, Nav } from 'react-bootstrap';
 import './offcanvas-navbar.css';
 
 const OffcanvasNavbar = () => {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
-    <Navbar expand={false} sticky="top" className="navbar">
+    <Navbar expand={false} sticky="top" className={`offcanvas-navbar-section ${scrolled ? 'scrolled' : ''}`}>
       <Container fluid>
         <div className="d-flex align-items-center justify-content-between w-100">
           <Navbar.Toggle aria-controls="offcanvasNavbar" />
