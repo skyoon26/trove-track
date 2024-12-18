@@ -28,14 +28,14 @@ public class CategoryController {
         return categoryService.getAllCategories();
     }
 
-    @GetMapping("/categories/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Integer id) {
+    @GetMapping("/category/{id}")
+    public ResponseEntity<?> getCategoryById(@PathVariable int id) {
         try {
             Category category = categoryService.getCategoryById(id);
             return ResponseEntity.ok(category);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(null);
+                    .body(e.getMessage());
         }
     }
 

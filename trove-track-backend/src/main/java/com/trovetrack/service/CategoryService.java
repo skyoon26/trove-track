@@ -24,7 +24,7 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public Category getCategoryById(Integer id) {
+    public Category getCategoryById(int id) {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Category not found with ID: " + id));
     }
