@@ -28,4 +28,15 @@ public class CategoryService {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Category not found with ID: " + id));
     }
+
+    public Category updateCategory(int id, Category category) {
+        Category existingCategory = categoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with ID: " + id));
+
+        existingCategory.setName(category.getName());
+        existingCategory.setDateCreated(LocalDateTime.now());
+
+        return categoryRepository.save(existingCategory);
+    }
+
 }

@@ -39,4 +39,15 @@ public class CategoryController {
         }
     }
 
+    @PatchMapping("/category/{id}")
+    public ResponseEntity<?> updateCategory(@PathVariable int id, @RequestBody Category category) {
+        try {
+            Category updatedCategory = categoryService.updateCategory(id, category);
+            return ResponseEntity.ok(updatedCategory);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }
+    }
+
 }
