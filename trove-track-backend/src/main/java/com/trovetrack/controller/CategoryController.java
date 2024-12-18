@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-@RequiredArgsConstructor
+@RequiredArgsConstructor // lombok annotation that allows constructor-based dependency injection
 @CrossOrigin(origins = "http://localhost:5173/")
 public class CategoryController {
 

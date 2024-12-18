@@ -10,7 +10,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Entity
+@Entity // Tells Spring Boot this is a JPA entity
 @Data // Gets boilerplate code from lombok
 public class Category {
 
