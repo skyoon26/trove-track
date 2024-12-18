@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service // Tells Spring to manage this class, contains business logic, allows for dependency injection
 @RequiredArgsConstructor // lombok annotation that allows constructor-based dependency injection
@@ -16,5 +17,9 @@ public class CategoryService {
     public Category createCategory(Category category) {
         category.setDateCreated(LocalDateTime.now());
         return categoryRepository.save(category);
+    }
+
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
     }
 }

@@ -5,6 +5,8 @@ import com.trovetrack.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor // lombok annotation that allows constructor-based dependency injection
@@ -16,5 +18,10 @@ public class CategoryController {
     @PostMapping("/category")
     public Category createCategory(@RequestBody Category category) {
         return categoryService.createCategory(category);
+    }
+
+    @GetMapping("/categories")
+    public List<Category> getAllCategories() {
+        return categoryService.getAllCategories();
     }
 }
