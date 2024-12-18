@@ -39,4 +39,11 @@ public class CategoryService {
         return categoryRepository.save(existingCategory);
     }
 
+    public void deleteCategory(int id) {
+        if(!categoryRepository.existsById(id)) {
+            throw new EntityNotFoundException("Category not found with ID: " + id);
+        }
+        categoryRepository.deleteById(id);
+    }
+
 }
