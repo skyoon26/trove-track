@@ -1,6 +1,6 @@
-import './homepage-hero.css';
+import './landing-page-hero.css';
 
-const HomepageHero = () => {
+const LandingPageHero = () => {
   return (
     <div className="p-5 homepage-hero-section">
       <div className="container homepage-hero-text">
@@ -17,4 +17,4 @@ const HomepageHero = () => {
   );
 }
 
-export default HomepageHero;
+export default LandingPageHero;

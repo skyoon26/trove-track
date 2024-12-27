@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import './App.css'
 import OffcanvasNavbar from './components/Navbar/OffcanvasNavbar';
-import HomepageHero from './components/HomepageHero/HomepageHero';
+import LandingPage from './pages/LandingPage/LandingPage';
 
 function App() {
 
   return (
     <>
       <OffcanvasNavbar />
-      <HomepageHero />
+      <LandingPage />
     </>
   )
 }
