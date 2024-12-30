@@ -1,18 +1,30 @@
 package com.trovetrack.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity // Lets Spring Boot know this is where security configuration is kept
 public class SecurityConfig {
+
+    private CustomUserDetailsService userDetailsService;
+
+    @Autowired // Injects the CustomerUserDetailsService
+    public SecurityConfig(CustomUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     // Security filter chain configuration needed for routing/intercepting requests before they get sent to the controllers
     @Bean
@@ -41,5 +53,16 @@ public class SecurityConfig {
                         .build();
 
         return new InMemoryUserDetailsManager(admin, user);
+    }
+
+    @Bean // Built-in components that allow Spring Security to manage user authentication automatically
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean // Provides a PasswordEncoder to securely encode passwords using BCrypt (hashing algorithm)
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
