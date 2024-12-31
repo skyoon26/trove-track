@@ -5,6 +5,10 @@
   align-items: center;
 }
 
+.text-content {
+  margin: 1rem;
+}
+
 .btn-navyblue {
   display: inline-block;
   border-radius: 12px;
@@ -42,4 +46,11 @@
 .btn-navyblue:hover span:after {
   opacity: 1;
   right: 0; 
+}
+
+.image-content img {
+  width: 65vw;
+  max-width: 450px;  
+  height: auto;       
+  margin-right: 1rem;
 }
