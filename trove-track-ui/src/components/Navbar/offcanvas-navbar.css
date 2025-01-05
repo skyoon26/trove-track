@@ -1,13 +1,13 @@
 #troveTrackNavLink {
-  margin-left: -70px;
   font-size: 2rem;
 }
 
 .offcanvas-navbar-section {
+  font-weight: bold;
   background-color: transparent;
   transition: background-color 0.3s ease;
 }
 
 .navbar.scrolled {
-  background-color: rgb(205, 227, 253);
+  background-color: rgb(249, 202, 116);
 }
