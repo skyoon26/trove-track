@@ -1,5 +1,6 @@
 package com.trovetrack.controller;
 
+import com.trovetrack.dto.LoginDto;
 import com.trovetrack.dto.RegisterDto;
 import com.trovetrack.entity.Role;
 import com.trovetrack.entity.UserEntity;
@@ -9,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,5 +58,17 @@ public class AuthController {
         userRepository.save(user);
 
         return new ResponseEntity<>("User registered successfully!", HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
+        // Authenticate the user by Validating credentials
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
+
+        // If authentication is successful, store the user's authentication in the SecurityContext
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return new ResponseEntity<>("User signed in successfully!", HttpStatus.OK);
     }
 }
