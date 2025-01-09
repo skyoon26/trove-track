@@ -5,6 +5,7 @@ import './offcanvas-navbar.css';
 
 const OffcanvasNavbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,17 +23,22 @@ const OffcanvasNavbar = () => {
     };
   }, []);
 
+  const handleLinkClick = () => {
+    setShowOffcanvas(false);
+  };
+
   return (
     <>
       <Navbar expand={false} sticky="top" className={`offcanvas-navbar-section ${scrolled ? 'scrolled' : ''}`}>
         <Container fluid>
           <div className="d-flex align-items-center justify-content-between w-100">
-            <Navbar.Toggle aria-controls="offcanvasNavbar" />
+            <Navbar.Toggle 
+              aria-controls="offcanvasNavbar"
+              onClick={() => setShowOffcanvas(!showOffcanvas)} 
+            />
             <Navbar.Brand 
               href="#" 
               className='d-none d-md-inline mx-2'
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvasNavbar"
             >
               Menu
             </Navbar.Brand>
@@ -40,14 +46,15 @@ const OffcanvasNavbar = () => {
               id="troveTrackNavLink"
               className="mx-auto text-center"
             >
-              <Nav.Link as={Link} to={"/landing"}>TroveTrack</Nav.Link>
+              <Nav.Link as={Link} to={"/"}>TroveTrack</Nav.Link>
             </Navbar.Brand>
           </div>
           <Navbar.Offcanvas
             id="offcanvasNavbar"
             aria-labelledby="offcanvasNavbarLabel"
             placement="start"
-            backdrop={true}
+            show={showOffcanvas}
+            onHide={() => setShowOffcanvas(false)}
           >
             <Offcanvas.Header closeButton>
               <Offcanvas.Title id="offcanvasNavbarLabel">
@@ -56,14 +63,14 @@ const OffcanvasNavbar = () => {
             </Offcanvas.Header>
             <Offcanvas.Body>
               <Nav className="justify-content-end flex-grow-1 pe-3">
-                <Nav.Link as={Link} to={"/"}>Home</Nav.Link>
-                <Nav.Link as={Link} to={"/order"}>Order</Nav.Link>
-                <Nav.Link as={Link} to={"/manage"}>Manage</Nav.Link>
-                <Nav.Link as={Link} to={"/search"}>Search</Nav.Link>
+                <Nav.Link as={Link} to={"/home"} onClick={handleLinkClick}>Home</Nav.Link>
+                <Nav.Link as={Link} to={"/order"} onClick={handleLinkClick}>Order</Nav.Link>
+                <Nav.Link as={Link} to={"/manage"} onClick={handleLinkClick}>Manage</Nav.Link>
+                <Nav.Link as={Link} to={"/search"} onClick={handleLinkClick}>Search</Nav.Link>
                 <NavDropdown title="Account" id="collapsible-nav-dropdown">
-                  <NavDropdown.Item as={Link} to={"/account"}>View</NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to={"/account"} onClick={handleLinkClick}>View</NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item as={Link} to={"/account"}>Sign out</NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to={"/account"} onClick={handleLinkClick}>Sign out</NavDropdown.Item>
                 </NavDropdown>
               </Nav>
             </Offcanvas.Body>
