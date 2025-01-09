@@ -15,8 +15,8 @@ function App() {
     <>
       <OffcanvasNavbar />
       <Routes>
-        <Route path="/landing" element={<LandingPage />} />
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/home" element={<HomePage />} />
         <Route path="/order" element={<OrderPage />} />
         <Route path="/manage" element={<ManagePage />} />
         <Route path="/search" element={<SearchPage />} />
