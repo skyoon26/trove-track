@@ -1,0 +1,56 @@
+.hero-section {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-content {
+  margin: 1rem;
+}
+
+.btn-navyblue {
+  display: inline-block;
+  border-radius: 12px;
+  background-color: rgb(249, 202, 116);
+  border: none;
+  color: black;
+  text-align: center;
+  font-size: 20px;
+  padding: 14px;
+  width: 8rem;
+  transition: all 0.5s;
+  cursor: pointer;
+}
+
+.btn-navyblue span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.btn-navyblue span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.btn-navyblue:hover span {
+  padding-right: 25px;
+}
+
+.btn-navyblue:hover span:after {
+  opacity: 1;
+  right: 0; 
+}
+
+.image-content img {
+  width: 65vw;
+  max-width: 450px;  
+  height: auto;       
+  margin-right: 1rem;
+}
