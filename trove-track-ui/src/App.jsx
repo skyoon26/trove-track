@@ -3,11 +3,11 @@ import './App.css'
 import OffcanvasNavbar from './components/Navbar/OffcanvasNavbar';
 import LandingPage from './pages/LandingPage/LandingPage';
 import { Route, Routes } from 'react-router-dom';
-import HomePage from './pages/HomePage/HomePage';
-import OrderPage from './pages/OrderPage/OrderPage';
-import ManagePage from './pages/ManagePage/ManagePage';
-import SearchPage from './pages/SearchPage/SearchPage';
-import AccountPage from './pages/AccountPage/AccountPage';
+import HomePage from './pages/HomePage';
+import OrderPage from './pages/OrderPage';
+import ManagePage from './pages/ManagePage';
+import SearchPage from './pages/SearchPage';
+import AccountPage from './pages/AccountPage';
 
 function App() {
 
