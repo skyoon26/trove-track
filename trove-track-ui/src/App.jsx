@@ -8,6 +8,8 @@ import OrderPage from './pages/OrderPage';
 import ManagePage from './pages/ManagePage';
 import SearchPage from './pages/SearchPage';
 import AccountPage from './pages/AccountPage';
+import SignInPage from './pages/SignInPage';
+import RegisterPage from './pages/RegisterPage';
 
 function App() {
 
@@ -16,6 +18,8 @@ function App() {
       <OffcanvasNavbar />
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/signin" element={<SignInPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/order" element={<OrderPage />} />
         <Route path="/manage" element={<ManagePage />} />
