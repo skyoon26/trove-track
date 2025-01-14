@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 const SignInPage = () => {
   return (
     <>
-      <Container className="d-flex align-items-center justify-content-center vh-100">
+      <Container className="d-flex align-items-center justify-content-center">
         <Row className="w-100 justify-content-center">
-          <Col xs={12} md={8} lg={6} className="d-flex justify-content-center">
-            <Card className="p-4 w-100">
+          <Col xs={12} md={8} lg={6}>
+            <Card className="p-4">
               <Card.Body>
                 <h1 className="text-center">Welcome Back!</h1>
                 <p className="text-center">Please enter login details below</p>

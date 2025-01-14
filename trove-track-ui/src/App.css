@@ -8,3 +8,10 @@ html, body {
   background-attachment: fixed;
   background-position: center center;
 }
+
+.page-content {
+  min-height: calc(100vh - 60px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

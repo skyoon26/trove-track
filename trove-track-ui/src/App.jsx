@@ -16,16 +16,18 @@ function App() {
   return (
     <>
       <OffcanvasNavbar />
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/signin" element={<SignInPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/order" element={<OrderPage />} />
-        <Route path="/manage" element={<ManagePage />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/account" element={<AccountPage />} />
-      </Routes>
+      <div className="page-content">
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/order" element={<OrderPage />} />
+          <Route path="/manage" element={<ManagePage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/account" element={<AccountPage />} />
+        </Routes>
+      </div>
     </>
   )
 }
