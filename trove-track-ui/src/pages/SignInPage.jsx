@@ -3,7 +3,7 @@ import { Container, Button, Row,  Col, Form, Card } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../services/authService';
 
-const SignInPage = () => {
+const SignInPage = ({ handleLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -11,6 +11,7 @@ const SignInPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (!username || !password) {
       setError('Username and password are required.');
       return;
@@ -18,8 +19,11 @@ const SignInPage = () => {
 
     try {
       const data = await login(username, password);
-      localStorage.setItem('token', data.token);
-      navigate('/home');
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        handleLogin();
+        navigate('/home');
+      }
     } catch (err) {
       setError(err.message || 'An error occurred. Please try again.');
     }

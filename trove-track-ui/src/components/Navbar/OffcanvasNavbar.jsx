@@ -3,7 +3,7 @@ import { Navbar, Container, Offcanvas, Nav, NavDropdown } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
 import './offcanvas-navbar.css';
 
-const OffcanvasNavbar = () => {
+const OffcanvasNavbar = ({ handleLogout, isAuthenticated }) => {
   const [scrolled, setScrolled] = useState(false);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
 
@@ -44,7 +44,7 @@ const OffcanvasNavbar = () => {
             </Navbar.Brand>
             <Navbar.Brand
               id="troveTrackNavLink"
-              className="mx-auto text-center"
+              className="mx-auto"
             >
               <Nav.Link as={Link} to={"/"}>TroveTrack</Nav.Link>
             </Navbar.Brand>
@@ -63,15 +63,24 @@ const OffcanvasNavbar = () => {
             </Offcanvas.Header>
             <Offcanvas.Body>
               <Nav className="justify-content-end flex-grow-1 pe-3">
-                <Nav.Link as={Link} to={"/home"} onClick={handleLinkClick}>Home</Nav.Link>
-                <Nav.Link as={Link} to={"/order"} onClick={handleLinkClick}>Order</Nav.Link>
-                <Nav.Link as={Link} to={"/manage"} onClick={handleLinkClick}>Manage</Nav.Link>
-                <Nav.Link as={Link} to={"/search"} onClick={handleLinkClick}>Search</Nav.Link>
-                <NavDropdown title="Account" id="collapsible-nav-dropdown">
-                  <NavDropdown.Item as={Link} to={"/account"} onClick={handleLinkClick}>View</NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item as={Link} to={"/account"} onClick={handleLinkClick}>Sign out</NavDropdown.Item>
-                </NavDropdown>
+                {isAuthenticated ? (
+                  <>
+                    <Nav.Link as={Link} to={"/home"} onClick={handleLinkClick}>Home</Nav.Link>
+                    <Nav.Link as={Link} to={"/order"} onClick={handleLinkClick}>Order</Nav.Link>
+                    <Nav.Link as={Link} to={"/manage"} onClick={handleLinkClick}>Manage</Nav.Link>
+                    <Nav.Link as={Link} to={"/search"} onClick={handleLinkClick}>Search</Nav.Link>
+                    <NavDropdown title="Account" id="collapsible-nav-dropdown">
+                      <NavDropdown.Item as={Link} to={"/account"} onClick={handleLinkClick}>View</NavDropdown.Item>
+                      <NavDropdown.Divider />
+                      <NavDropdown.Item onClick={() => { handleLogout(); setShowOffcanvas(false); }}>Sign out</NavDropdown.Item>
+                    </NavDropdown>
+                  </>
+                ) : (
+                  <>
+                    <Nav.Link as={Link} to={"/signin"} onClick={handleLinkClick}>Sign In</Nav.Link>
+                    <Nav.Link as={Link} to={"/register"} onClick={handleLinkClick}>Register</Nav.Link>
+                  </>
+                )}
               </Nav>
             </Offcanvas.Body>
           </Navbar.Offcanvas>
