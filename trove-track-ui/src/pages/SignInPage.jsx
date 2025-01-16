@@ -11,7 +11,6 @@ const SignInPage = ({ handleLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!username || !password) {
       setError('Username and password are required.');
       return;
@@ -31,8 +30,8 @@ const SignInPage = ({ handleLogin }) => {
 
   return (
     <>
-      <Container className="d-flex align-items-center justify-content-center">
-        <Row className="w-100 justify-content-center">
+      <Container>
+        <Row className="justify-content-center">
           <Col xs={12} md={8} lg={6}>
             <Card className="p-4">
               <Card.Body>
@@ -44,6 +43,7 @@ const SignInPage = ({ handleLogin }) => {
                     <Form.Control
                       type="text"
                       placeholder="Username"
+                      required
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                     />
@@ -53,12 +53,13 @@ const SignInPage = ({ handleLogin }) => {
                     <Form.Control
                       type="password"
                       placeholder="Password"
+                      required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
                   </Form.Group>
                   <Button variant="primary" type="submit" className="w-100">
-                    Sign In
+                    Sign in
                   </Button>
                 </Form>
                 <p className="text-center">
