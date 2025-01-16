@@ -8,8 +8,17 @@ export const login = async (username, password) => {
       username,
       password,
     });
-    return response.data;
+
+    const { accessToken, tokenType } = response.data;
+
+    if (accessToken && tokenType) {
+      const fullToken = `${tokenType}${accessToken}`;
+      return { token: fullToken };
+    } else {
+      throw new Error("Token or tokenType is missing");
+    }
   } catch (error) {
-    throw error.response ? error.response.data : error.message;
+    console.error("Login error: ", error);
+    throw new Error("Login failed");
   }
 };
