@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import OffcanvasNavbar from './components/Navbar/OffcanvasNavbar';
 import LandingPage from './pages/LandingPage/LandingPage';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import OrderPage from './pages/OrderPage';
 import ManagePage from './pages/ManagePage';
@@ -10,26 +10,46 @@ import SearchPage from './pages/SearchPage';
 import AccountPage from './pages/AccountPage';
 import SignInPage from './pages/SignInPage';
 import RegisterPage from './pages/RegisterPage';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    navigate('/');
+  };
 
   return (
     <>
-      <OffcanvasNavbar />
+      <OffcanvasNavbar 
+        handleLogin={handleLogin}
+        handleLogout={handleLogout} 
+        isAuthenticated={isAuthenticated}  
+      />
       <div className="page-content">
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
-          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/signin" element={<SignInPage handleLogin={handleLogin} />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/order" element={<OrderPage />} />
-          <Route path="/manage" element={<ManagePage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/account" element={<AccountPage />} />
+
+          {/* Protected Routes */}
+          <Route path="/home" element={<PrivateRoute><HomePage /></PrivateRoute>} />
+          <Route path="/order" element={<PrivateRoute><OrderPage /></PrivateRoute>} />
+          <Route path="/manage" element={<PrivateRoute><ManagePage /></PrivateRoute>} />
+          <Route path="/search" element={<PrivateRoute><SearchPage /></PrivateRoute>} />
+          <Route path="/account" element={<PrivateRoute><AccountPage /></PrivateRoute>} />
         </Routes>
       </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
