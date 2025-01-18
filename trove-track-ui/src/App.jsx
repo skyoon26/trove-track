@@ -2,8 +2,8 @@ import { useState } from 'react'
 import './App.css'
 import OffcanvasNavbar from './components/Navbar/OffcanvasNavbar';
 import LandingPage from './pages/LandingPage/LandingPage';
-import { Route, Routes, useNavigate } from 'react-router-dom';
-import HomePage from './pages/HomePage';
+import { Route, Routes, Navigate, useNavigate } from 'react-router-dom';
+import HomePage from './pages/Home/HomePage';
 import OrderPage from './pages/OrderPage';
 import ManagePage from './pages/ManagePage';
 import SearchPage from './pages/SearchPage';
@@ -39,6 +39,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/signin" element={<SignInPage handleLogin={handleLogin} />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="*" element={<Navigate to="/signin" />} />
 
           {/* Protected Routes */}
           <Route path="/home" element={<PrivateRoute><HomePage /></PrivateRoute>} />
@@ -46,6 +47,7 @@ function App() {
           <Route path="/manage" element={<PrivateRoute><ManagePage /></PrivateRoute>} />
           <Route path="/search" element={<PrivateRoute><SearchPage /></PrivateRoute>} />
           <Route path="/account" element={<PrivateRoute><AccountPage /></PrivateRoute>} />
+          <Route path="*" element={<Navigate to="/home" />} />
         </Routes>
       </div>
     </>
