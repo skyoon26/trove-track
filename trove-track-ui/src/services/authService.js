@@ -12,7 +12,8 @@ export const login = async (username, password) => {
     const { accessToken, tokenType } = response.data;
 
     if (accessToken && tokenType) {
-      const fullToken = `${tokenType}${accessToken}`;
+      const fullToken = `${tokenType} ${accessToken}`;
+      sessionStorage.setItem("authToken", fullToken);
       return { token: fullToken };
     } else {
       throw new Error("Token or tokenType is missing");
