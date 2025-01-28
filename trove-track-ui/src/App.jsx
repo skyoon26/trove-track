@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import OffcanvasNavbar from './components/Navbar/OffcanvasNavbar';
 import LandingPage from './pages/LandingPage/LandingPage';
 import { Route, Routes, Navigate, useNavigate } from 'react-router-dom';
-import HomePage from './pages/Home/HomePage';
+import HomePage from './pages/HomePage';
 import OrderPage from './pages/OrderPage';
 import ManagePage from './pages/ManagePage';
 import SearchPage from './pages/SearchPage';
@@ -13,17 +13,23 @@ import RegisterPage from './pages/RegisterPage';
 import PrivateRoute from './components/PrivateRoute';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = sessionStorage.getItem('authToken');
+    setIsAuthenticated(!!token);
+  }, []);
 
   const handleLogin = () => {
     setIsAuthenticated(true);
+    navigate('/home');
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    sessionStorage.removeItem('authToken');
     setIsAuthenticated(false);
-    navigate('/');
+    navigate('/signin');
   };
 
   return (

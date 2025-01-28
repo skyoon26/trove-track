@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 
 const PrivateRoute = ({ children }) => {
   // Check if the user is authenticated (token exists in localStorage)
-  const isAuthenticated = localStorage.getItem('token') ? true : false;
+  const isAuthenticated = sessionStorage.getItem('authToken') ? true : false;
 
   // If not authenticated, redirect to SignIn page
   if (!isAuthenticated) {
