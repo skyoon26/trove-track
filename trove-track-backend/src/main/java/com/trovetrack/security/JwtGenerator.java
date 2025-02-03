@@ -1,5 +1,7 @@
 package com.trovetrack.security;
 
+import com.trovetrack.entity.UserEntity;
+import com.trovetrack.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,16 +19,28 @@ public class JwtGenerator {
     // Secure 512-bit key for HS512 signing algorithm
     private static final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
+    private final UserRepository userRepository;
+
+    public JwtGenerator(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     // Generates a JWT token for the authenticated user
     public String generateToken(Authentication authentication) {
-        String username = authentication.getName();
+        String username = authentication.getName(); // Get the logged-in user's username
+
+        // Retrieve user details from the database
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + SecurityConstants.JWT_EXPIRATION);
 
         // Build and sign the JWT with the username, issued date, and expiration date
         String token = Jwts.builder()
                 .setSubject(username)
-                .setIssuedAt(new Date())
+                .claim("firstName", user.getFirstName())
+                .setIssuedAt(currentDate)
                 .setExpiration(expireDate)
                 .signWith(key)
                 .compact();
