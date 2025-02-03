@@ -1,4 +1,5 @@
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const API_URL = "http://localhost:8080/api/auth";
 
@@ -13,8 +14,14 @@ export const login = async (username, password) => {
 
     if (accessToken && tokenType) {
       const fullToken = `${tokenType} ${accessToken}`;
+
+      const decodedToken = jwtDecode(accessToken);
+      const decodedFirstName = decodedToken.firstName;
+
       sessionStorage.setItem("authToken", fullToken);
-      return { token: fullToken };
+      sessionStorage.setItem("firstName", decodedFirstName);
+
+      return { token: fullToken, decodedFirstName };
     } else {
       throw new Error("Token or tokenType is missing");
     }
