@@ -18,8 +18,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:5173/")
@@ -56,8 +54,10 @@ public class AuthController {
         user.setEmail(registerDto.getEmail());
 
         // Fetches the "USER" role from the database and assigns it to the User
-        Role roles = roleRepository.findByName("USER").get();
-        user.setRoles(Collections.singletonList(roles));
+        Role role = roleRepository.findByName("USER")
+                .orElseThrow(() -> new RuntimeException("Role 'USER' not found"));
+
+        user.setRole(role);
 
         userRepository.save(user);
 

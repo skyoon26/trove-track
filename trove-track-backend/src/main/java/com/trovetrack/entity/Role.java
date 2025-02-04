@@ -1,13 +1,13 @@
 package com.trovetrack.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "roles")
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 public class Role {
 
     @Id // Makes this a primary key
