@@ -9,6 +9,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "items")
 @Data
@@ -40,4 +43,8 @@ public class Item {
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
     private Category category;
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private List<OrderItem> orderItems = new ArrayList<>();
 }
