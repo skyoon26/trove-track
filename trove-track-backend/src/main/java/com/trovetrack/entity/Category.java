@@ -1,14 +1,14 @@
 package com.trovetrack.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity // Tells Spring Boot this is a JPA entity
 @Data // Gets boilerplate code from lombok
@@ -23,4 +23,8 @@ public class Category {
     private String name;
 
     private LocalDateTime dateCreated;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private List<Item> items = new ArrayList<>();
 }
