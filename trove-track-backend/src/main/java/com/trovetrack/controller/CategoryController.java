@@ -1,6 +1,6 @@
 package com.trovetrack.controller;
 
-import com.trovetrack.entity.Category;
+import com.trovetrack.dto.CategoryDto;
 import com.trovetrack.service.CategoryService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -12,49 +12,55 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@RequiredArgsConstructor // lombok annotation that allows constructor-based dependency injection
+@RequiredArgsConstructor // Lombok annotation that allows constructor-based dependency injection
 @CrossOrigin(origins = "http://localhost:5173/")
 public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @PostMapping("/category")
-    public Category createCategory(@RequestBody Category category) {
-        return categoryService.createCategory(category);
+    @PostMapping("/categories")
+    public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto) {
+        CategoryDto newCategory = categoryService.createCategory(categoryDto);
+
+        return new ResponseEntity<>(newCategory, HttpStatus.CREATED);
     }
 
     @GetMapping("/categories")
-    public List<Category> getAllCategories() {
-        return categoryService.getAllCategories();
+    public ResponseEntity<List<CategoryDto>> getAllCategories() {
+        List<CategoryDto> categories = categoryService.getAllCategories();
+
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
-    @GetMapping("/category/{id}")
+    @GetMapping("/categories/{id}")
     public ResponseEntity<?> getCategoryById(@PathVariable int id) {
         try {
-            Category category = categoryService.getCategoryById(id);
-            return ResponseEntity.ok(category);
+            CategoryDto categoryDto = categoryService.getCategoryById(id);
+
+            return ResponseEntity.ok(categoryDto);
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-    @PatchMapping("/category/{id}")
-    public ResponseEntity<?> updateCategory(@PathVariable int id, @RequestBody Category category) {
+    @PatchMapping("/categories/{id}")
+    public ResponseEntity<?> updateCategory(@PathVariable int id, @RequestBody CategoryDto categoryDto) {
         try {
-            Category updatedCategory = categoryService.updateCategory(id, category);
+            CategoryDto updatedCategory = categoryService.updateCategory(id, categoryDto);
+
             return ResponseEntity.ok(updatedCategory);
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-    @DeleteMapping("category/{id}")
+    @DeleteMapping("/categories/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable int id) {
         try {
             categoryService.deleteCategory(id);
-            return ResponseEntity.ok("Deleted successfully category with ID: " + id);
+            return ResponseEntity.ok("Category with ID " + id + " deleted successfully");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
