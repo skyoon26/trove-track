@@ -1,12 +1,16 @@
 package com.trovetrack.service;
 
+import com.trovetrack.dto.CategoryDto;
+import com.trovetrack.dto.ItemDto;
 import com.trovetrack.entity.Category;
+import com.trovetrack.entity.Item;
 import com.trovetrack.repository.CategoryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service // Tells Spring to manage this class, contains business logic, allows for dependency injection
@@ -15,28 +19,41 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public Category createCategory(Category category) {
+    public CategoryDto createCategory(CategoryDto categoryDto) {
+        Category newCategory = convertToCategoryEntity(categoryDto);
+        newCategory.setDateCreated(LocalDateTime.now());
+        Category savedCategory = categoryRepository.save(newCategory);
+
+        return convertToCategoryDto(savedCategory);
+    }
+
+    public List<CategoryDto> getAllCategories() {
+        List<Category> categories = categoryRepository.findAll();
+        List<CategoryDto> categoryDtos = new ArrayList<>();
+
+        for (Category category : categories) {
+            CategoryDto categoryDto = convertToCategoryDto(category);
+            categoryDtos.add(categoryDto);
+        }
+
+        return categoryDtos;
+    }
+
+    public CategoryDto getCategoryById(int id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Category with ID " + id + " not found"));
+        return convertToCategoryDto(category);
+    }
+
+    public CategoryDto updateCategory(int id, CategoryDto categoryDto) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Category with ID " + id + " not found"));
+
+        category.setName(categoryDto.getName());
         category.setDateCreated(LocalDateTime.now());
-        return categoryRepository.save(category);
-    }
+        Category updatedCategory = categoryRepository.save(category);
 
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
-    }
-
-    public Category getCategoryById(int id) {
-        return categoryRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Category not found with ID: " + id));
-    }
-
-    public Category updateCategory(int id, Category category) {
-        Category existingCategory = categoryRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Category not found with ID: " + id));
-
-        existingCategory.setName(category.getName());
-        existingCategory.setDateCreated(LocalDateTime.now());
-
-        return categoryRepository.save(existingCategory);
+        return convertToCategoryDto(updatedCategory);
     }
 
     public void deleteCategory(int id) {
@@ -46,4 +63,42 @@ public class CategoryService {
         categoryRepository.deleteById(id);
     }
 
+    private CategoryDto convertToCategoryDto(Category category) {
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setId(category.getId());
+        categoryDto.setName(category.getName());
+        categoryDto.setDateCreated(category.getDateCreated());
+
+        // Convert each Item to ItemDTO and add to the list
+        List<ItemDto> itemDTOs = new ArrayList<>();
+        for (Item item : category.getItems()) {
+            ItemDto itemDTO = convertToItemDto(item);
+            itemDTOs.add(itemDTO);
+        }
+        categoryDto.setItems(itemDTOs);
+
+        return categoryDto;
+    }
+
+    private Category convertToCategoryEntity(CategoryDto categoryDto) {
+        Category category = new Category();
+        category.setId(categoryDto.getId());
+        category.setName(categoryDto.getName());
+
+        return category;
+    }
+
+    private ItemDto convertToItemDto(Item item) {
+        ItemDto itemDto = new ItemDto();
+        itemDto.setId(item.getId());
+        itemDto.setName(item.getName());
+        itemDto.setDescription(item.getDescription());
+        itemDto.setLocation(item.getLocation());
+        itemDto.setQuantity(item.getQuantity());
+        itemDto.setPrice(item.getPrice());
+        itemDto.setMinQuantity(item.getMinQuantity());
+        itemDto.setCategoryId(item.getCategory().getId());
+
+        return itemDto;
+    }
 }
