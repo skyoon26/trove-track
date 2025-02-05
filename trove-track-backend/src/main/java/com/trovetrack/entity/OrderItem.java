@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "order_items")
@@ -23,6 +24,11 @@ public class OrderItem {
     private double priceAtOrder;
 
     private double total;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    @ToString.Exclude
+    private Order order;
 
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
