@@ -9,7 +9,8 @@ public class ItemDto {
     private String name;
     private String description;
     private String location;
-    private int quantity;
-    private double price;
-    private String categoryName;
+    private Integer quantity;
+    private Double price;
+    private Integer minQuantity;
+    private Integer categoryId;
 }
