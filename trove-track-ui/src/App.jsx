@@ -3,7 +3,7 @@ import './App.css'
 import OffcanvasNavbar from './components/Navbar/OffcanvasNavbar';
 import LandingPage from './pages/LandingPage/LandingPage';
 import { Route, Routes, Navigate, useNavigate } from 'react-router-dom';
-import HomePage from './pages/HomePage';
+import HomePage from './pages/HomePage/HomePage';
 import OrderPage from './pages/OrderPage';
 import ManagePage from './pages/ManagePage';
 import SearchPage from './pages/SearchPage';
