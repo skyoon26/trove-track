@@ -2,8 +2,8 @@ import React from 'react'
 
 const OrderPage = () => {
   return (
-    <h1>OrderPage</h1>
+    <h1>Order</h1>
   )
 }
 
-export default OrderPage
+export default OrderPage;
