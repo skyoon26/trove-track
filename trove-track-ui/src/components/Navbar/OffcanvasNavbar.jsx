@@ -36,17 +36,15 @@ const OffcanvasNavbar = ({ handleLogout, isAuthenticated }) => {
               aria-controls="offcanvasNavbar"
               onClick={() => setShowOffcanvas(!showOffcanvas)} 
             />
-            <Navbar.Brand 
-              href="#" 
-              className='d-none d-md-inline mx-2'
-            >
-              Menu
-            </Navbar.Brand>
             <Navbar.Brand
               id="troveTrackNavLink"
               className="mx-auto"
-            >
-              <Nav.Link as={Link} to={"/"}>TroveTrack</Nav.Link>
+            > 
+              {isAuthenticated ? (
+                <Nav.Link as={Link} to={"/home"}>TroveTrack</Nav.Link>
+              ) : (
+                <Nav.Link as={Link} to={"/"}>TroveTrack</Nav.Link>
+              )}
             </Navbar.Brand>
           </div>
           <Navbar.Offcanvas
@@ -66,9 +64,9 @@ const OffcanvasNavbar = ({ handleLogout, isAuthenticated }) => {
                 {isAuthenticated ? (
                   <>
                     <Nav.Link as={Link} to={"/home"} onClick={handleLinkClick}>Home</Nav.Link>
+                    <Nav.Link as={Link} to={"/inventory"} onClick={handleLinkClick}>Inventory</Nav.Link>
                     <Nav.Link as={Link} to={"/order"} onClick={handleLinkClick}>Order</Nav.Link>
-                    <Nav.Link as={Link} to={"/manage"} onClick={handleLinkClick}>Manage</Nav.Link>
-                    <Nav.Link as={Link} to={"/search"} onClick={handleLinkClick}>Search</Nav.Link>
+                    <Nav.Link as={Link} to={"/history"} onClick={handleLinkClick}>History</Nav.Link>
                     <NavDropdown title="Account" id="collapsible-nav-dropdown">
                       <NavDropdown.Item as={Link} to={"/account"} onClick={handleLinkClick}>View</NavDropdown.Item>
                       <NavDropdown.Divider />
