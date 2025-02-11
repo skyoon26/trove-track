@@ -23,8 +23,6 @@ public class OrderItem {
 
     private double priceAtOrder;
 
-    private double total;
-
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
     @ToString.Exclude

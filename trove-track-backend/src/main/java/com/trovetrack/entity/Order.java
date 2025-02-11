@@ -38,7 +38,7 @@ public class Order {
     public double getTotalAmount() {
         double totalAmount = 0;
         for (OrderItem orderItem : orderItems) {
-            totalAmount += orderItem.getTotal();  // Assuming each OrderItem has a 'getTotal()' method
+            totalAmount += orderItem.getTotal();
         }
         return totalAmount;
     }
