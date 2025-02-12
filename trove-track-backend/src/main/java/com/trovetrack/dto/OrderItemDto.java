@@ -9,5 +9,5 @@ public class OrderItemDto {
     private Integer itemId;
     private Integer orderId;
     private Integer quantity;
-    private Double price;
+    private Double priceAtOrder;
 }

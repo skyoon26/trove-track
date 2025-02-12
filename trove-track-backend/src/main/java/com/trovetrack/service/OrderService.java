@@ -24,19 +24,38 @@ public class OrderService {
     private final ItemRepository itemRepository;
 
     public OrderDto createOrder(OrderDto orderDto, String username) {
+        // Fetch the user
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User with username " + username + " not found"));
 
+        // Convert OrderDto to Order entity
         Order newOrder = convertToOrderEntity(orderDto, user);
 
+        // Create a new list to hold the order items
         List<OrderItem> orderItems = new ArrayList<>();
         for (OrderItemDto orderItemDto : orderDto.getOrderItems()) {
+            // Fetch the corresponding item from the items table
+            Item item = itemRepository.findById(orderItemDto.getItemId())
+                    .orElseThrow(() -> new EntityNotFoundException("Item with id " + orderItemDto.getItemId() + " not found"));
+
+            // Update the item's quantity based on the order's quantity
+            int updatedQuantity = item.getQuantity() + orderItemDto.getQuantity();
+            item.setQuantity(updatedQuantity);
+            item.setPrice(orderItemDto.getPriceAtOrder());
+            itemRepository.save(item);
+
+            // Convert to OrderItem entity under the new order
             OrderItem orderItem = convertToOrderItemEntity(orderItemDto, newOrder);
             orderItems.add(orderItem);
         }
+
+        // Set the order items to the new order
         newOrder.setOrderItems(orderItems);
 
+        // Save the order to the database
         Order savedOrder = orderRepository.save(newOrder);
+
+        // Convert and return the saved order as a DTO
         return convertToOrderDto(savedOrder);
     }
 
@@ -69,6 +88,7 @@ public class OrderService {
     private OrderDto convertToOrderDto(Order order) {
         OrderDto orderDto = new OrderDto();
         orderDto.setId(order.getId());
+        orderDto.setOrderNumber(order.getOrderNumber());
         orderDto.setVendorName(order.getVendorName());
 
         List<OrderItemDto> orderItemDtos = new ArrayList<>();
@@ -88,7 +108,7 @@ public class OrderService {
                 .orElseThrow(() -> new EntityNotFoundException("Item with ID " + orderItemDto.getItemId() + " not found"));
 
         orderItem.setQuantity(orderItemDto.getQuantity());
-        orderItem.setPriceAtOrder(orderItemDto.getPrice());
+        orderItem.setPriceAtOrder(orderItemDto.getPriceAtOrder());
         orderItem.setOrder(order);
         orderItem.setItem(item);
 
@@ -101,7 +121,7 @@ public class OrderService {
         orderItemDto.setOrderId(orderItem.getOrder().getId());
         orderItemDto.setItemId(orderItem.getItem().getId());
         orderItemDto.setQuantity(orderItem.getQuantity());
-        orderItemDto.setPrice(orderItem.getPriceAtOrder());
+        orderItemDto.setPriceAtOrder(orderItem.getPriceAtOrder());
 
         return orderItemDto;
     }
