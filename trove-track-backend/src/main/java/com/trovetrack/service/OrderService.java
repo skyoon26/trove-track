@@ -78,6 +78,7 @@ public class OrderService {
     private Order convertToOrderEntity(OrderDto orderDto, UserEntity user) {
         Order order = new Order();
         order.setId(orderDto.getId());
+        order.setOrderDate(orderDto.getOrderDate());
         order.setOrderNumber(orderDto.getOrderNumber());
         order.setVendorName(orderDto.getVendorName());
         order.setUser(user);
@@ -88,6 +89,7 @@ public class OrderService {
     private OrderDto convertToOrderDto(Order order) {
         OrderDto orderDto = new OrderDto();
         orderDto.setId(order.getId());
+        orderDto.setOrderDate(order.getOrderDate());
         orderDto.setOrderNumber(order.getOrderNumber());
         orderDto.setVendorName(order.getVendorName());
 
