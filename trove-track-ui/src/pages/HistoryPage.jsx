@@ -21,12 +21,12 @@ const HistoryPage = () => {
 
   return (
     <Container className="main-container py-3">
-      <Stack direction="horizontal" gap={3} className="p-3">
-        <h2 className="m-0">{firstName ? firstName : "Guest's"}'s Orders</h2>
-        <p className="m-0 ms-auto">{today}</p>
+      <Stack direction="horizontal" gap={3} className="m-0 p-3">
+        <h2>{firstName ? firstName : "Guest's"}'s Orders</h2>
+        <p className="ms-auto">{today}</p>
       </Stack>
 
-      <Card className="p-2 mt-4">
+      <Card className="p-2 mt-3">
         <Stack direction="horizontal" gap={3}>
           <h3 className="m-0 p-2 fs-5 fw-bold">Order History</h3>
           <Button variant="outline-primary" className="p-2 ms-auto" onClick={handleNavigate}>New Order</Button>     

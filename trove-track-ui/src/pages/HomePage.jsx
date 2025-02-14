@@ -21,13 +21,13 @@ const HomePage = () => {
   });
 
   return (
-    <Container className="main-container py-3 m-5">
-      <Stack direction="horizontal" gap={3} className="m-2">
-        <h2 className="m-0 p-2">Welcome, {firstName ? firstName : "Guest"}</h2>
-        <p className="p-2 ms-auto">{today}</p>
+    <Container className="main-container py-3">
+      <Stack direction="horizontal" gap={3} className="m-0 p-3">
+        <h2>Welcome, {firstName ? firstName : "Guest"}</h2>
+        <p className="ms-auto">{today}</p>
       </Stack>
       
-      <Card className="p-2 mt-4">
+      <Card className="p-2 mt-3">
         <Stack direction="horizontal" gap={3}>
           <h3 className="m-0 p-2 fs-5 fw-bold">Dashboard Summary</h3>
           <Button variant="outline-primary" className="p-2 ms-auto">Add Inventory</Button>
