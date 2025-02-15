@@ -1,4 +1,5 @@
-import { Container, Stack, Card, Button, Accordion } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
+import { Container, Stack, Card, Button, Accordion, Modal, InputGroup, Form } from 'react-bootstrap';
 import PageTabs from '../components/PageTabs';
 
 const InventoryPage = () => {
@@ -11,6 +12,11 @@ const InventoryPage = () => {
     day: "numeric",
   });
 
+  // Manages state and handler functions for the "Add Category" button and modal
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const handleCloseCategoryModal = () => setShowCategoryModal(false);
+  const handleShowCategoryModal = () => setShowCategoryModal(true);
+
   return (
     <Container className="main-container py-3">
       <Stack direction="horizontal" gap={3} className="m-0 p-3">
@@ -22,7 +28,37 @@ const InventoryPage = () => {
         <Card className="p-2 mt-3">
           <Stack direction="horizontal" gap={3}>
             <h3 className="m-0 p-2 fs-5 fw-bold">Category Name</h3>
-            <Button variant="outline-primary" className="p-2 ms-auto">Add Category</Button>
+            <Button variant="outline-primary" className="p-2 ms-auto" onClick={handleShowCategoryModal}>Add Category</Button>
+            <Modal size="lg" centered show={showCategoryModal} onHide={handleCloseCategoryModal}>
+              <Modal.Header closeButton>
+                <Modal.Title>Add Category</Modal.Title>
+              </Modal.Header>
+
+              <Modal.Body>
+                <Form id="addCategoryForm">
+                  <Form.Group className="mb-3" controlId="categoryName">
+                    <Form.Label>Category Name</Form.Label>
+                    <Form.Control 
+                      type="text"
+                      placeholder="Enter category name"
+                      required
+                      autoFocus
+                      autoComplete="off"
+                    />
+                  </Form.Group>
+                </Form>
+              </Modal.Body>
+
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleCloseCategoryModal}>
+                  Close
+                </Button>
+                <Button variant="primary" onClick={handleCloseCategoryModal}>
+                  Save Changes
+                </Button>
+              </Modal.Footer>
+            </Modal>
+
             <Button variant="outline-primary" className="p-2">Add Item</Button>
           </Stack>
         </Card>
