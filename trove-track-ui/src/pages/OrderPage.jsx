@@ -1,9 +1,8 @@
-import { Container, Stack, Card, Button, Accordion, Table } from 'react-bootstrap';
+import { useState } from 'react';
+import { Container, Stack, Card, Button, Col, Row, Modal, InputGroup, Form } from 'react-bootstrap';
 import PageTabs from '../components/PageTabs';
 
 const OrderPage = () => {
-
-  const firstName = sessionStorage.getItem("firstName");
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -12,79 +11,61 @@ const OrderPage = () => {
     day: "numeric",
   });
 
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   return (
-    <Container className="main-container py-3 m-5">
-      <Stack direction="horizontal" gap={3} className="m-2">
-        <h2 className="p-2">{firstName ? firstName : "Guest's"}'s Orders</h2>
-        <p className="p-2 ms-auto">{today}</p>
+    <Container className="main-container py-3">
+      <Stack direction="horizontal" gap={3} className="m-0 p-3">
+        <h2>Create a New Order</h2>
+        <p className="ms-auto">{today}</p>
       </Stack>
 
-      <div>
-        <Card className="px-2 mt-4">
-          <Stack direction="horizontal" gap={3}>
-            <h3 className="p-2">Order History</h3>
-            <Button variant="outline-primary" className="p-2 ms-auto">New Order</Button>
-          </Stack>
-        </Card>
-        <Accordion alwaysOpen className="pt-2">
-          <Accordion.Item eventKey="0">
-            <Accordion.Header>
-              Order #1
-            </Accordion.Header>
-            <Accordion.Body>
-              <Table striped>
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Item Name</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>02/13/2025</td>
-                    <td>Matcha</td>
-                    <td>5</td>
-                    <td>$75.00</td>
-                  </tr>
-                  <tr>
-                    <td>02/13/2025</td>
-                    <td>Black Tea</td>
-                    <td>3</td>
-                    <td>$30.00</td>
-                  </tr>
-                </tbody>
-                <p className="px-2 pt-3 fw-bold">Total: $105.00</p>
-              </Table>
-            </Accordion.Body>
-          </Accordion.Item>
-          <Accordion.Item eventKey="1">
-            <Accordion.Header>Order #2</Accordion.Header>
-            <Accordion.Body>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-              minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-              pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-              culpa qui officia deserunt mollit anim id est laborum.
-            </Accordion.Body>
-          </Accordion.Item>
-          <Accordion.Item eventKey="3">
-            <Accordion.Header>Order #3</Accordion.Header>
-            <Accordion.Body>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-              minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-              pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-              culpa qui officia deserunt mollit anim id est laborum.
-            </Accordion.Body>
-          </Accordion.Item>
-        </Accordion>
-      </div>
+      <Card className="mt-3">
+        <Card.Header className="fs-5 fw-bold">
+          <Row className="d-flex justify-content-between align-items-center">
+            <Col>Order Details</Col>
+            <Col className="text-end">
+              <Button variant="outline-primary" onClick={handleShow}>Select Item</Button>
+            
+              <Modal size="lg" centered show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Modal heading</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+                  <InputGroup className="mb-3">
+                    <Form.Control
+                      placeholder="Search for an item"
+                      aria-label="Item search"
+                    />
+                    <Button variant="outline-secondary">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                      </svg>
+                    </Button>
+                  </InputGroup>
+                </Modal.Body>
+
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={handleClose}>
+                    Close
+                  </Button>
+                  <Button variant="primary" onClick={handleClose}>
+                    Save Changes
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+            </Col>
+          </Row>
+        </Card.Header>
+        
+        <Card.Body>
+          <Card.Text>Select an item to begin order</Card.Text>
+        </Card.Body>
+      </Card>
       <PageTabs />
     </Container>
   )
