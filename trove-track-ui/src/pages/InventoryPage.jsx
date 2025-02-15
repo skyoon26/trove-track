@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Container, Stack, Card, Button, Accordion, Modal, InputGroup, Form } from 'react-bootstrap';
+import { createCategory } from '../services/categoryService';
 import PageTabs from '../components/PageTabs';
 
 const InventoryPage = () => {
@@ -12,10 +13,54 @@ const InventoryPage = () => {
     day: "numeric",
   });
 
-  // Manages state and handler functions for the "Add Category" button and modal
+  // Manages state for success and error message upon form submission
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
+
+  const resetMessages = () => {
+    setError(null);
+    setSuccess(false);
+  };
+
+  // Manages state and handlers for the "Add Category" button and modal
   const [showCategoryModal, setShowCategoryModal] = useState(false);
-  const handleCloseCategoryModal = () => setShowCategoryModal(false);
+  const handleCloseCategoryModal = () => {
+    setShowCategoryModal(false);
+    setCategoryName("");
+    resetMessages();
+  };
   const handleShowCategoryModal = () => setShowCategoryModal(true);
+
+  // Initializes state for category name
+  const [categoryName, setCategoryName] = useState("");
+
+  // Handles category addition
+  const handleAddCategory = async (categoryName) => {
+    setSuccess(false); // Resets success message state
+    setError(null); // Resets error message state
+    try {
+      await createCategory(categoryName);
+      setSuccess(true);
+    } catch (error) {
+      setError("Oops! We couldn't add the new category. Please try again later.");
+      setSuccess(false);
+    }
+  };
+
+  // Handles form submission for adding a new category
+  const handleSubmitCategory = async (e) => {
+    e.preventDefault();
+    await handleAddCategory(categoryName);
+  };
+
+  // Closes modal after successful form submission
+  useEffect(() => {
+    if (success) {
+      setTimeout(() => {
+        handleCloseCategoryModal();
+      }, 1000);
+    }
+  }, [success]); 
 
   return (
     <Container className="main-container py-3">
@@ -35,7 +80,7 @@ const InventoryPage = () => {
               </Modal.Header>
 
               <Modal.Body>
-                <Form id="addCategoryForm">
+                <Form id="addCategoryForm" onSubmit={handleSubmitCategory}>
                   <Form.Group className="mb-3" controlId="categoryName">
                     <Form.Label>Category Name</Form.Label>
                     <Form.Control 
@@ -44,8 +89,12 @@ const InventoryPage = () => {
                       required
                       autoFocus
                       autoComplete="off"
+                      value={categoryName}
+                      onChange={(e) => setCategoryName(e.target.value)}
                     />
                   </Form.Group>
+                  {error && <div className='alert alert-danger'>{error}</div>}
+                  {success && <div className='alert alert-success'>New category added successfully!</div>}
                 </Form>
               </Modal.Body>
 
@@ -53,8 +102,8 @@ const InventoryPage = () => {
                 <Button variant="secondary" onClick={handleCloseCategoryModal}>
                   Close
                 </Button>
-                <Button variant="primary" onClick={handleCloseCategoryModal}>
-                  Save Changes
+                <Button variant="primary" type="submit" form="addCategoryForm">
+                  Submit
                 </Button>
               </Modal.Footer>
             </Modal>
