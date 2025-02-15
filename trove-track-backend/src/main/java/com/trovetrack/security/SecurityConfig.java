@@ -12,6 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity // Lets Spring Boot know this is where security configuration is kept
@@ -39,8 +42,28 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Allows unrestricted access to endpoints under "/api/auth/**" (e.g. login or registration)
                         .anyRequest().authenticated()); // Requires authentication for all other endpoints
+
+        // Applies the CORS filter
+        http.addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class);
+
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build(); // Builds and returns the configured security filter chain
+    }
+
+    @Bean // Sets up CORS to allow requests from the frontend with specific settings
+    public CorsFilter corsFilter() {
+        // Create CORS configuration
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.addAllowedOrigin("http://localhost:5173"); // Allow the frontend
+        corsConfiguration.addAllowedMethod("*"); // Allow all HTTP methods (GET, POST, etc.)
+        corsConfiguration.addAllowedHeader("*"); // Allow all headers
+        corsConfiguration.setAllowCredentials(true); // Allow credentials
+
+        // Apply the CORS configuration to all URL paths in the application
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration); // Apply to all paths
+
+        return new CorsFilter(source);
     }
 
     @Bean // Built-in components that allow Spring Security to manage user authentication automatically
