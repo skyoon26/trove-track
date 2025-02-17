@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Container, Stack, Card, Button, Accordion, Modal, InputGroup, Form } from 'react-bootstrap';
-import { createCategory } from '../services/categoryService';
+import { Container, Stack, Card, Button, Accordion, Modal, InputGroup, Form, Table } from 'react-bootstrap';
+import { createCategory, getAllCategories } from '../services/categoryService';
 import PageTabs from '../components/PageTabs';
 
 const InventoryPage = () => {
@@ -60,7 +60,23 @@ const InventoryPage = () => {
         handleCloseCategoryModal();
       }, 1000);
     }
-  }, [success]); 
+  }, [success]);
+
+  // Manages category state, fetches category data from API, and updates UI
+  const [categories, setCategories] = useState([]);
+  
+  const fetchCategories = async () => {
+    try {
+      const data = await getAllCategories();
+      setCategories(data);
+    } catch (error) {
+      setError("Oops! We couldn't fetch the categories. Please try again.");
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   return (
     <Container className="main-container py-3">
@@ -69,87 +85,87 @@ const InventoryPage = () => {
         <p className="ms-auto">{today}</p>
       </Stack>
 
-      <div>
-        <Card className="p-2 mt-3">
-          <Stack direction="horizontal" gap={3}>
-            <h3 className="m-0 p-2 fs-5 fw-bold">Category Name</h3>
-            <Button variant="outline-primary" className="p-2 ms-auto" onClick={handleShowCategoryModal}>Add Category</Button>
-            <Modal size="lg" centered show={showCategoryModal} onHide={handleCloseCategoryModal}>
-              <Modal.Header closeButton>
-                <Modal.Title>Add Category</Modal.Title>
-              </Modal.Header>
+      <Card className="p-2 mt-3">
+        <Stack direction="horizontal" gap={3}>
+          <h3 className="m-0 p-2 fs-5 fw-bold">Inventory Actions</h3>
+          <Button variant="outline-primary" className="p-2 ms-auto" onClick={handleShowCategoryModal}>New Category</Button>
+          <Modal size="lg" centered show={showCategoryModal} onHide={handleCloseCategoryModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>New Category</Modal.Title>
+            </Modal.Header>
 
-              <Modal.Body>
-                <Form id="addCategoryForm" onSubmit={handleSubmitCategory}>
-                  <Form.Group className="mb-3" controlId="categoryName">
-                    <Form.Label>Category Name</Form.Label>
-                    <Form.Control 
-                      type="text"
-                      placeholder="Enter category name"
-                      required
-                      autoFocus
-                      autoComplete="off"
-                      value={categoryName}
-                      onChange={(e) => setCategoryName(e.target.value)}
-                    />
-                  </Form.Group>
-                  {error && <div className='alert alert-danger'>{error}</div>}
-                  {success && <div className='alert alert-success'>New category added successfully!</div>}
-                </Form>
-              </Modal.Body>
+            <Modal.Body>
+              <Form id="addCategoryForm" onSubmit={handleSubmitCategory}>
+                <Form.Group className="mb-3" controlId="categoryName">
+                  <Form.Label>Category Name</Form.Label>
+                  <Form.Control 
+                    type="text"
+                    placeholder="Enter category name"
+                    required
+                    autoFocus
+                    autoComplete="off"
+                    value={categoryName}
+                    onChange={(e) => setCategoryName(e.target.value)}
+                  />
+                </Form.Group>
+                {error && <div className='alert alert-danger'>{error}</div>}
+                {success && <div className='alert alert-success'>New category added successfully!</div>}
+              </Form>
+            </Modal.Body>
 
-              <Modal.Footer>
-                <Button variant="secondary" onClick={handleCloseCategoryModal}>
-                  Close
-                </Button>
-                <Button variant="primary" type="submit" form="addCategoryForm">
-                  Submit
-                </Button>
-              </Modal.Footer>
-            </Modal>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseCategoryModal}>
+                Close
+              </Button>
+              <Button variant="primary" type="submit" form="addCategoryForm">
+                Submit
+              </Button>
+            </Modal.Footer>
+          </Modal>
 
-            <Button variant="outline-primary" className="p-2">Add Item</Button>
-          </Stack>
-        </Card>
-        <Accordion alwaysOpen className="pt-2">
-          <Accordion.Item eventKey="0">
-            <Accordion.Header>Accordion Item #1</Accordion.Header>
-            <Accordion.Body>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-              minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-              pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-              culpa qui officia deserunt mollit anim id est laborum.
-            </Accordion.Body>
+          <Button variant="outline-primary" className="p-2">New Item</Button>
+        </Stack>
+      </Card>
+
+      <Accordion alwaysOpen className="pt-2">
+        {categories.length === 0 ? (
+          <Accordion.Item>
+            <Accordion.Header>No Inventory</Accordion.Header>
           </Accordion.Item>
-          <Accordion.Item eventKey="1">
-            <Accordion.Header>Accordion Item #2</Accordion.Header>
-            <Accordion.Body>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-              minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-              pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-              culpa qui officia deserunt mollit anim id est laborum.
-            </Accordion.Body>
-          </Accordion.Item>
-          <Accordion.Item eventKey="3">
-            <Accordion.Header>Accordion Item #3</Accordion.Header>
-            <Accordion.Body>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-              minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-              pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-              culpa qui officia deserunt mollit anim id est laborum.
-            </Accordion.Body>
-          </Accordion.Item>
-        </Accordion>
-      </div>
+        ) : (
+          categories.map(category => (
+            <Accordion.Item
+              key={category.id}
+              eventKey={category.id.toString()}
+            >
+              <Accordion.Header>{category.name}</Accordion.Header>
+              <Accordion.Body>
+                {category.items.length == 0 ? (
+                  <div>No items added</div>
+                ) : (
+                  <Table striped bordered hover responsive>
+                    <tbody>
+                      {category.items.map((item, index) => (
+                        <tr key={index}>
+                          <td className="fw-bold">{item.name}</td>
+                          <td>{item.description}</td>
+                          <td>{item.location}</td>
+                          <td>{item.quantity}</td>
+                          <td>${item.price}</td>
+                          <td>
+                            Action Here
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                )}
+              </Accordion.Body>
+            </Accordion.Item>
+          ))
+        )}
+      </Accordion>
+      
       <PageTabs />
     </Container>
   )
