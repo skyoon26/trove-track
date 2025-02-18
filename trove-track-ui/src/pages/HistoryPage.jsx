@@ -62,8 +62,8 @@ const HistoryPage = () => {
                   <td>$30.00</td>
                 </tr>
               </tbody>
-              <p className="px-2 pt-3 fw-bold">Total: $105.00</p>
             </Table>
+            <p className="px-2 pt-3 fw-bold">Total: $105.00</p>
           </Accordion.Body>
         </Accordion.Item>
         <Accordion.Item eventKey="1">
