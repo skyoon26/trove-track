@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Container, Card, Stack, Button, Accordion, Row, Col, Tab, Tabs } from 'react-bootstrap';
 import { getAllCategories } from '../services/categoryService';
 import './pages.css';
@@ -39,6 +40,12 @@ const HomePage = () => {
     totalItems += category.items?.length || 0;
   });
 
+  const navigate = useNavigate();
+
+  const handleNavigate = (route) => {
+    navigate(route);
+  };
+
   return (
     <Container className="main-container py-3">
       <Stack direction="horizontal" gap={3} className="m-0 p-3">
@@ -49,7 +56,7 @@ const HomePage = () => {
       <Card className="p-2 mt-3">
         <Stack direction="horizontal" gap={3}>
           <h3 className="m-0 p-2 fs-5 fw-bold">Dashboard Summary</h3>
-          <Button variant="outline-primary" className="p-2 ms-auto">Add Inventory</Button>
+          <Button variant="outline-primary" className="p-2 ms-auto" onClick={() => handleNavigate("/inventory")}>Add Inventory</Button>
         </Stack>    
       </Card>
       <Row className="g-2 pt-2">
@@ -64,7 +71,7 @@ const HomePage = () => {
       <Card className="p-2 mt-4">
         <Stack direction="horizontal" gap={3}>
           <h3 className="m-0 p-2 fs-5 fw-bold">Low Stock Items</h3>
-          <Button variant="outline-primary" className="p-2 ms-auto">Order Item</Button>
+          <Button variant="outline-primary" className="p-2 ms-auto" onClick={() => handleNavigate("/order")}>Order Item</Button>
         </Stack>
       </Card>
       <Accordion alwaysOpen className="pt-2">
@@ -109,7 +116,7 @@ const HomePage = () => {
       <Card className="p-2 mt-4">
         <Stack direction="horizontal" gap={3}>
           <h3 className="m-0 p-2 fs-5 fw-bold">Recent Activity</h3>
-          <Button variant="outline-primary" className="p-2 ms-auto">View History</Button>
+          <Button variant="outline-primary" className="p-2 ms-auto" onClick={() => handleNavigate("/history")}>View History</Button>
         </Stack>
       </Card>
       <Accordion alwaysOpen className="pt-2">
