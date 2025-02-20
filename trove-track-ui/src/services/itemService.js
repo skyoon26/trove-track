@@ -17,3 +17,19 @@ export const createItem = async (item) => {
     throw error;
   }
 };
+
+export const updateItem = async (itemId, item) => {
+  const token = sessionStorage.getItem("authToken");
+  try {
+    const response = await axios.patch(
+      `${API_URL}/${itemId}`, 
+      item,
+      { headers: {
+        Authorization: token,
+      }});
+    return response.data;
+  } catch (error) {
+    console.error("Error updating item: ", error);
+    throw error;
+  }
+};
