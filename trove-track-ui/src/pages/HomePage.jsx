@@ -1,23 +1,42 @@
+import { useState, useEffect } from 'react';
 import { Container, Card, Stack, Button, Accordion, Row, Col, Tab, Tabs } from 'react-bootstrap';
+import { getAllCategories } from '../services/categoryService';
 import './pages.css';
 import PageTabs from '../components/PageTabs';
+import SummaryCard from '../components/SummaryCard';
 
 const HomePage = () => {
 
   const firstName = sessionStorage.getItem("firstName");
-
-  const summaryData = [
-    { title: "Total Items", value: "320" },
-    { title: "Low Stock Items", value: "12" },
-    { title: "Total Categories", value: "8" },
-    { title: "Recent Orders", value: "5" }
-  ];
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
+  });
+  
+  // Manages category state, fetches category data from API, and updates UI
+  const [categories, setCategories] = useState([]);
+  
+  const fetchCategories = async () => {
+    try {
+      const data = await getAllCategories();
+      setCategories(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const totalCategories = categories.length;
+    
+  let totalItems = 0;
+  categories.forEach(category => {
+    totalItems += category.items?.length || 0;
   });
 
   return (
@@ -34,16 +53,12 @@ const HomePage = () => {
         </Stack>    
       </Card>
       <Row className="g-2 pt-2">
-        {summaryData.map((item, index) => (
-          <Col xs={12} md={6} lg={6} key={index}>
-            <Card>
-              <Card.Body className="text-center">
-                <Card.Title>{item.title}</Card.Title>
-                <Card.Text className="fs-5">{item.value}</Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
+        <Col xs={12} md={6} lg={6}>
+          <SummaryCard title="Total Items" value={totalItems}/>
+        </Col>
+        <Col xs={12} md={6} lg={6}>
+          <SummaryCard title="Total Categories" value={totalCategories} />
+        </Col>
       </Row>
       
       <Card className="p-2 mt-4">
