@@ -3,6 +3,7 @@ import { Container, Stack, Card, Button, Accordion, Modal, InputGroup, Form, Tab
 import { createCategory, getAllCategories } from '../services/categoryService';
 import { createItem } from '../services/itemService';
 import PageTabs from '../components/PageTabs';
+import EditModal from '../components/EditModal';
 
 const InventoryPage = () => {
   const firstName = sessionStorage.getItem("firstName");
@@ -208,6 +209,9 @@ const InventoryPage = () => {
                     type="text"
                     name="name"
                     placeholder="Enter name"
+                    required
+                    autoFocus
+                    autoComplete="off"
                     value={itemData.name}
                     onChange={handleItemChange}
                   />
@@ -217,6 +221,7 @@ const InventoryPage = () => {
                   <Form.Label>Category</Form.Label>
                   <Form.Select
                     name="categoryId"
+                    required
                     value={itemData.categoryId}
                     onChange={handleItemChange}
                   >
@@ -330,7 +335,12 @@ const InventoryPage = () => {
                           <td>{item.quantity}</td>
                           <td>${item.price}</td>
                           <td>
-                            Action Here
+                            <EditModal 
+                              categories={categories}
+                              item={item}
+                              fetchCategories={fetchCategories}
+                              resetMessages={resetMessages}
+                            />
                           </td>
                         </tr>
                       ))}
