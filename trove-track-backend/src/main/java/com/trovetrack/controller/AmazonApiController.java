@@ -20,4 +20,10 @@ public class AmazonApiController {
         String data = amazonApiService.fetchAmazonProduct(asin);
         return ResponseEntity.ok(data);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<String> searchAmazonProducts(@RequestParam String query) {
+        String data = amazonApiService.searchAmazonProducts(query);
+        return ResponseEntity.ok(data);
+    }
 }

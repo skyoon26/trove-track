@@ -31,4 +31,17 @@ public class AmazonApiService {
 
         return response.getBody();
     }
+
+    public String searchAmazonProducts(String query) {
+        String url = apiUrl + "/search?query=" + query + "&page=1&country=US&sort_by=RELEVANCE&product_condition=ALL&is_prime=false&deals_and_discounts=NONE";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-RapidAPI-Key", apiKey);
+        headers.set("X-RapidAPI-Host", "real-time-amazon-data.p.rapidapi.com");
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+
+        return response.getBody();
+    }
 }
