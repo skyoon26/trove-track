@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .httpBasic(httpBasic -> httpBasic.realmName("TroveTrack")) // Configures HTTP Basic Authentication and sets a custom realm name
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Allows unrestricted access to endpoints under "/api/auth/**" (e.g. login or registration)
+                        .requestMatchers("/api/amazon/**").permitAll()
                         .anyRequest().authenticated()); // Requires authentication for all other endpoints
 
         // Applies the CORS filter
