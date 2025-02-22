@@ -13,4 +13,5 @@ public class ItemDto {
     private Double price;
     private Integer minQuantity;
     private Integer categoryId;
+    private String asin;
 }

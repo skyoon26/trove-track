@@ -77,6 +77,9 @@ public class ItemService {
                     .orElseThrow(() -> new EntityNotFoundException("Category with ID " + categoryId + " not found"));
             item.setCategory(category);
         }
+        if (itemDto.getAsin() != null) {
+            item.setAsin(itemDto.getAsin());
+        }
         Item updatedItem = itemRepository.save(item);
 
         return convertToItemDto(updatedItem);
@@ -103,6 +106,7 @@ public class ItemService {
         itemDto.setPrice(item.getPrice());
         itemDto.setMinQuantity(item.getMinQuantity());
         itemDto.setCategoryId(item.getCategory().getId());
+        itemDto.setAsin(item.getAsin());
 
         return itemDto;
     }
@@ -116,6 +120,7 @@ public class ItemService {
         item.setQuantity(itemDto.getQuantity());
         item.setPrice(itemDto.getPrice());
         item.setMinQuantity(itemDto.getMinQuantity());
+        item.setAsin(itemDto.getAsin());
 
         Category category = categoryRepository.findById(itemDto.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("Category with ID " + itemDto.getCategoryId() + " not found"));

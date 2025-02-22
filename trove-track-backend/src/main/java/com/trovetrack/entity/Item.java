@@ -47,4 +47,6 @@ public class Item {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    private String asin;
 }
