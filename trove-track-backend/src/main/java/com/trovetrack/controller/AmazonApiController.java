@@ -1,5 +1,6 @@
 package com.trovetrack.controller;
 
+import com.trovetrack.dto.AmazonProductDto;
 import com.trovetrack.service.AmazonApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +17,9 @@ public class AmazonApiController {
     private final AmazonApiService amazonApiService;
 
     @GetMapping("/product")
-    public ResponseEntity<String> getAmazonProduct(@RequestParam String asin) {
-        String data = amazonApiService.fetchAmazonProduct(asin);
-        return ResponseEntity.ok(data);
+    public ResponseEntity<AmazonProductDto> getAmazonProduct(@RequestParam String asin) {
+        AmazonProductDto product = amazonApiService.getAmazonProduct(asin);
+        return ResponseEntity.ok(product);
     }
 
     @GetMapping("/search")

@@ -1,5 +1,9 @@
 package com.trovetrack.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.trovetrack.dto.AmazonProductDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,8 +23,8 @@ public class AmazonApiService {
         this.restTemplate = new RestTemplate();
     }
 
-    public String fetchAmazonProduct(String productId) {
-        String url = apiUrl + "/product-details?asin=" + productId + "&country=US";
+    public AmazonProductDto getAmazonProduct(String asin) {
+        String url = apiUrl + "/product-details?asin=" + asin + "&country=US";
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-RapidAPI-Key", apiKey);
@@ -29,7 +33,23 @@ public class AmazonApiService {
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
-        return response.getBody();
+        // Converts JSON response to AmazonProductDto
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            JsonNode jsonNode = objectMapper.readTree(response.getBody());  // Parses JSON
+
+            JsonNode dataNode = jsonNode.get("data");
+            if (dataNode != null && dataNode.has("product_title") && dataNode.has("product_price")) {
+                AmazonProductDto productDto = new AmazonProductDto();
+                productDto.setProductTitle(dataNode.get("product_title").asText());
+                productDto.setProductPrice(dataNode.get("product_price").asDouble());
+                return productDto;
+            } else {
+                throw new RuntimeException("Amazon API response is missing expected product details.");
+            }
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to parse Amazon API response", e);
+        }
     }
 
     public String searchAmazonProducts(String query) {
