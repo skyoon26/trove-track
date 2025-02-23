@@ -1,5 +1,6 @@
 package com.trovetrack.service;
 
+import com.trovetrack.dto.AmazonProductDto;
 import com.trovetrack.dto.ItemDto;
 import com.trovetrack.entity.Category;
 import com.trovetrack.entity.Item;
@@ -14,14 +15,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service // Tells Spring to manage this class, contains business logic, allows for dependency injection
-@RequiredArgsConstructor // lombok annotation that allows constructor-based dependency injection
+@RequiredArgsConstructor // Lombok annotation that allows constructor-based dependency injection
 public class ItemService {
 
     private final ItemRepository itemRepository;
 
     private final CategoryRepository categoryRepository;
 
+    private final AmazonApiService amazonApiService;
+
     public ItemDto createItem(ItemDto itemDto) {
+        // If ASIN is provided, get product details from Amazon
+        if (itemDto.getAsin() != null && !itemDto.getAsin().isEmpty()) {
+            AmazonProductDto product = amazonApiService.getAmazonProduct(itemDto.getAsin());
+
+            if (product != null) {
+                itemDto.setDescription(product.getProductTitle());
+                itemDto.setPrice(product.getProductPrice());
+            }
+        }
+
         Item newItem = convertToItemEntity(itemDto);
         Item savedItem = itemRepository.save(newItem);
 
