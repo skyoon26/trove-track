@@ -60,8 +60,7 @@ const InventoryPage = () => {
       location: "",
       description: "",
       categoryId: "",
-      amazonProductId: "",
-      image: "",
+      asin: ""
     });
     resetMessages();
   };
@@ -97,7 +96,8 @@ const InventoryPage = () => {
     minQuantity: "",
     price: "",
     location: "",
-    description: ""
+    description: "",
+    asin: ""
   });
 
   // Handles item addition
@@ -135,6 +135,7 @@ const InventoryPage = () => {
       price: itemData.price,
       location: itemData.location,
       description: itemData.description,
+      asin: itemData.asin
     };
     await handleAddItem(item);
   };
@@ -216,7 +217,6 @@ const InventoryPage = () => {
                     onChange={handleItemChange}
                   />
                 </Form.Group>
-
                 <Form.Group as={Col} controlId="itemCategory">
                   <Form.Label>Category</Form.Label>
                   <Form.Select
@@ -234,9 +234,10 @@ const InventoryPage = () => {
                   </Form.Select>
                 </Form.Group>
               </Row>
+              
               <Row className="mb-3">
                 <Form.Group as={Col} controlId="itemQuantity">
-                  <Form.Label>Quantity</Form.Label>
+                  <Form.Label>Current Quantity</Form.Label>
                   <Form.Control
                     type="text"
                     name="quantity"
@@ -245,7 +246,6 @@ const InventoryPage = () => {
                     onChange={handleItemChange}
                   />
                 </Form.Group>
-
                 <Form.Group as={Col} controlId="itemMinQuantity">
                   <Form.Label>Minimum Quantity</Form.Label>
                   <Form.Control
@@ -256,7 +256,6 @@ const InventoryPage = () => {
                     onChange={handleItemChange}
                   />
                 </Form.Group>
-
                 <Form.Group as={Col} controlId="itemPrice">
                   <Form.Label>Price</Form.Label>
                   <Form.Control
@@ -268,6 +267,7 @@ const InventoryPage = () => {
                   />
                 </Form.Group>
               </Row>
+              
               <Row className="mb-3">
                 <Form.Group as={Col} controlId="itemLocation">
                   <Form.Label>Location</Form.Label>
@@ -276,6 +276,16 @@ const InventoryPage = () => {
                     name="location"
                     placeholder="Enter location"
                     value={itemData.location}
+                    onChange={handleItemChange}
+                  />
+                </Form.Group>
+                <Form.Group as={Col} controlId="itemAsin">
+                  <Form.Label>Amazon ID Number</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="asin"
+                    placeholder="Enter Amazon ID"
+                    value={itemData.asin}
                     onChange={handleItemChange}
                   />
                 </Form.Group>
@@ -330,7 +340,7 @@ const InventoryPage = () => {
                       {category.items.map((item, index) => (
                         <tr key={index}>
                           <td className="fw-bold">{item.name}</td>
-                          <td>{item.description}</td>
+                          <td className="item-description-text">{item.description}</td>
                           <td>{item.location}</td>
                           <td>{item.quantity}</td>
                           <td>${item.price}</td>
