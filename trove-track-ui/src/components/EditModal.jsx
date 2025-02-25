@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, Modal, Form, Row, Col } from "react-bootstrap";
 import { updateItem } from '../services/itemService';
 
-const EditModal = ({ categories, item, fetchCategories, resetMessages }) => {
+const EditModal = ({ categories, item, fetchCategories }) => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
 
@@ -14,7 +14,8 @@ const EditModal = ({ categories, item, fetchCategories, resetMessages }) => {
     minQuantity: item.minQuantity,
     price: item.price,
     location: item.location,
-    description: item.description
+    description: item.description,
+    asin: item.asin
   });
 
   const handleShow = () => setShow(true);
@@ -28,9 +29,11 @@ const EditModal = ({ categories, item, fetchCategories, resetMessages }) => {
       minQuantity: item.minQuantity,
       price: item.price,
       location: item.location,
-      description: item.description
+      description: item.description,
+      asin: item.asin,
     });
-    resetMessages();
+    setSuccess(false);
+    setError(null);
   };
 
   const handleChange = (e) => {
@@ -51,7 +54,8 @@ const EditModal = ({ categories, item, fetchCategories, resetMessages }) => {
       minQuantity: itemData.minQuantity,
       price: itemData.price,
       location: itemData.location,
-      description: itemData.description
+      description: itemData.description,
+      asin: itemData.asin
     };
 
     try {
@@ -70,7 +74,7 @@ const EditModal = ({ categories, item, fetchCategories, resetMessages }) => {
   return (
     <>
       <Button variant="outline-primary" className="p-2" onClick={handleShow}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil" viewBox="0 0 16 16">
           <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
         </svg>
       </Button>
@@ -95,7 +99,6 @@ const EditModal = ({ categories, item, fetchCategories, resetMessages }) => {
                 onChange={handleChange}
               />
             </Form.Group>
-
             <Form.Group as={Col} controlId="itemCategory">
               <Form.Label>Category</Form.Label>
               <Form.Select
@@ -113,9 +116,10 @@ const EditModal = ({ categories, item, fetchCategories, resetMessages }) => {
               </Form.Select>
             </Form.Group>
           </Row>
+          
           <Row className="mb-3">
             <Form.Group as={Col} controlId="itemQuantity">
-              <Form.Label>Quantity</Form.Label>
+              <Form.Label>Current Quantity</Form.Label>
               <Form.Control
                 type="text"
                 name="quantity"
@@ -124,7 +128,6 @@ const EditModal = ({ categories, item, fetchCategories, resetMessages }) => {
                 onChange={handleChange}
               />
             </Form.Group>
-
             <Form.Group as={Col} controlId="itemMinQuantity">
               <Form.Label>Minimum Quantity</Form.Label>
               <Form.Control
@@ -135,7 +138,6 @@ const EditModal = ({ categories, item, fetchCategories, resetMessages }) => {
                 onChange={handleChange}
               />
             </Form.Group>
-
             <Form.Group as={Col} controlId="itemPrice">
               <Form.Label>Price</Form.Label>
               <Form.Control
@@ -147,6 +149,7 @@ const EditModal = ({ categories, item, fetchCategories, resetMessages }) => {
               />
             </Form.Group>
           </Row>
+          
           <Row className="mb-3">
             <Form.Group as={Col} controlId="itemLocation">
               <Form.Label>Location</Form.Label>
@@ -158,8 +161,18 @@ const EditModal = ({ categories, item, fetchCategories, resetMessages }) => {
                 onChange={handleChange}
               />
             </Form.Group>
+            <Form.Group as={Col} controlId="itemAsin">
+              <Form.Label>Amazon ID Number</Form.Label>
+              <Form.Control
+                type="text"
+                name="asin"
+                placeholder="Enter Amazon ID"
+                value={itemData.asin}
+                onChange={handleChange}
+              />
+            </Form.Group>
           </Row>
-
+          
           <Form.Group className="mb-3" controlId="itemDescription">
             <Form.Label>Description</Form.Label>
             <Form.Control
