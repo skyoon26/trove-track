@@ -64,8 +64,7 @@ public class ItemService {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Item with ID " + id + " not found"));
 
-        /* The if statements will check to see if each field is presented with data.
-        Any field without a value will remain the same. */
+        // Only updates fields if they are provided in the request
         if (itemDto.getName() != null) {
             item.setName(itemDto.getName());
         }
@@ -90,7 +89,12 @@ public class ItemService {
                     .orElseThrow(() -> new EntityNotFoundException("Category with ID " + categoryId + " not found"));
             item.setCategory(category);
         }
-        if (itemDto.getAsin() != null) {
+        if (itemDto.getAsin() != null && !itemDto.getAsin().isEmpty()) {
+            AmazonProductDto product = amazonApiService.getAmazonProduct(itemDto.getAsin());
+            if (product != null) {
+                item.setDescription(product.getProductTitle());
+                item.setPrice(product.getProductPrice());
+            }
             item.setAsin(itemDto.getAsin());
         }
         Item updatedItem = itemRepository.save(item);
