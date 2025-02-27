@@ -40,6 +40,7 @@ public class JwtGenerator {
         String token = Jwts.builder()
                 .setSubject(username)
                 .claim("firstName", user.getFirstName())
+                .claim("id", user.getId())  // Store user id in the token
                 .setIssuedAt(currentDate)
                 .setExpiration(expireDate)
                 .signWith(key)
