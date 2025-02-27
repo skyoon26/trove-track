@@ -16,12 +16,15 @@ export const login = async (username, password) => {
       const fullToken = `${tokenType} ${accessToken}`;
 
       const decodedToken = jwtDecode(accessToken);
+
       const decodedFirstName = decodedToken.firstName;
+      const userId = decodedToken.id;
 
       sessionStorage.setItem("authToken", fullToken);
       sessionStorage.setItem("firstName", decodedFirstName);
+      sessionStorage.setItem("userId", userId);
 
-      return { token: fullToken, decodedFirstName };
+      return { token: fullToken, decodedFirstName, userId };
     } else {
       throw new Error("Token or tokenType is missing");
     }
