@@ -17,3 +17,19 @@ export const createLog = async (log) => {
     throw error;
   }
 };
+
+export const getAllLogs = async () => {
+  const token = sessionStorage.getItem("authToken");
+  try {
+    const response = await axios.get(
+      API_URL,
+      { headers: {
+        Authorization: token,
+      }}
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching inventory logs: ", error);
+    throw error;
+  }
+};
