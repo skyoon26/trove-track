@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
 import { Container, Stack, Card, Button, Accordion, Table, Modal, Form, Row, Col } from 'react-bootstrap';
 import { getAllCategories } from "../services/categoryService";
-import { createLog } from "../services/inventoryLogService";
+import { createLog, getAllLogs } from "../services/inventoryLogService";
 import PageTabs from '../components/PageTabs';
 
 const HistoryPage = () => {
-
-  const id = sessionStorage.getItem("userId");
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -19,6 +17,7 @@ const HistoryPage = () => {
   const [error, setError] = useState(null);
   const [show, setShow] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [logs, setLogs] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [items, setItems] = useState([]);
   const [log, setLog] = useState({
@@ -57,8 +56,18 @@ const HistoryPage = () => {
     }
   };
 
+  const fetchLogs = async () => {
+    try {
+      const data = await getAllLogs();
+      setLogs(data);
+    } catch (error) {
+      setError("Oops! We couldn't fetch the inventory logs. Please try again.");
+    }
+  };
+
   useEffect(() => {
     fetchCategories();
+    fetchLogs();
   }, []);
 
   const handleCategoryChange = (categoryId) => {
@@ -93,6 +102,7 @@ const HistoryPage = () => {
       setTimeout(() => {
         handleClose();
       }, 1000);
+      fetchLogs();
     } catch (error) {
       setError("Oops! We couldn't create the inventory log. Please try again later.");
       setSuccess(false);
@@ -102,7 +112,7 @@ const HistoryPage = () => {
   return (
     <Container className="main-container py-3">
       <Stack direction="horizontal" gap={3} className="m-0 p-3">
-        <h2>Activity {id}</h2>
+        <h2>Activity</h2>
         <p className="ms-auto">{today}</p>
       </Stack>
 
@@ -216,62 +226,44 @@ const HistoryPage = () => {
       </Card>
       
       <Accordion alwaysOpen className="pt-2">
-        <Accordion.Item eventKey="0">
-          <Accordion.Header>
-            Order #1
-          </Accordion.Header>
-          <Accordion.Body>
-            <Table striped>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Item Name</th>
-                  <th>Quantity</th>
-                  <th>Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>02/13/2025</td>
-                  <td>Matcha</td>
-                  <td>5</td>
-                  <td>$75.00</td>
-                </tr>
-                <tr>
-                  <td>02/13/2025</td>
-                  <td>Black Tea</td>
-                  <td>3</td>
-                  <td>$30.00</td>
-                </tr>
-              </tbody>
-            </Table>
-            <p className="px-2 pt-3 fw-bold">Total: $105.00</p>
-          </Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Item eventKey="1">
-          <Accordion.Header>Order #2</Accordion.Header>
-          <Accordion.Body>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Item eventKey="3">
-          <Accordion.Header>Order #3</Accordion.Header>
-          <Accordion.Body>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </Accordion.Body>
-        </Accordion.Item>
+        {logs.length === 0 ? (
+          <Accordion.Item>
+            <Accordion.Header>No inventory logs added</Accordion.Header>
+          </Accordion.Item>
+        ) : (
+          logs.map(log => (
+            <Accordion.Item
+              key={log.id}
+              eventKey={log.id.toString()}
+            >
+              <Accordion.Header>{log.id}</Accordion.Header>
+              <Accordion.Body>
+                <Table striped bordered hover responsive>
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Item Name</th>
+                      <th>Quantity Changed</th>
+                      <th>Change Type</th>
+                      <th>Employee</th>
+                      <th>Reason</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr key={log.id}>
+                      <td>{log.changeDate}</td>
+                      <td>{log.itemName}</td>
+                      <td>{log.quantityChanged}</td>
+                      <td>{log.changeType}</td>
+                      <td>ID {log.changedByUserId}</td>
+                      <td>{log.reason}</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </Accordion.Body>
+            </Accordion.Item>
+          ))
+        )}
       </Accordion>
 
       <PageTabs />
