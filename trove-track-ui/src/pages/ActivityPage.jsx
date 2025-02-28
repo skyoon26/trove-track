@@ -4,7 +4,7 @@ import { getAllCategories } from "../services/categoryService";
 import { createLog, getAllLogs } from "../services/inventoryLogService";
 import PageTabs from '../components/PageTabs';
 
-const HistoryPage = () => {
+const ActivityPage = () => {
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -271,4 +271,4 @@ const HistoryPage = () => {
   )
 }
 
-export default HistoryPage;
+export default ActivityPage;

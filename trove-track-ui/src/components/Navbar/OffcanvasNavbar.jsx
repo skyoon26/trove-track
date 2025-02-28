@@ -65,8 +65,7 @@ const OffcanvasNavbar = ({ handleLogout, isAuthenticated }) => {
                   <>
                     <Nav.Link as={Link} to={"/home"} onClick={handleLinkClick}>Home</Nav.Link>
                     <Nav.Link as={Link} to={"/inventory"} onClick={handleLinkClick}>Inventory</Nav.Link>
-                    <Nav.Link as={Link} to={"/order"} onClick={handleLinkClick}>Order</Nav.Link>
-                    <Nav.Link as={Link} to={"/history"} onClick={handleLinkClick}>History</Nav.Link>
+                    <Nav.Link as={Link} to={"/activity"} onClick={handleLinkClick}>Activity</Nav.Link>
                     <NavDropdown title="Account" id="collapsible-nav-dropdown">
                       <NavDropdown.Item as={Link} to={"/account"} onClick={handleLinkClick}>View</NavDropdown.Item>
                       <NavDropdown.Divider />

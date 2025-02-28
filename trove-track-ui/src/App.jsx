@@ -6,7 +6,7 @@ import { Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import InventoryPage from './pages/InventoryPage';
 import OrderPage from './pages/OrderPage';
-import HistoryPage from './pages/HistoryPage';
+import ActivityPage from './pages/ActivityPage';
 import AccountPage from './pages/AccountPage';
 import SignInPage from './pages/SignInPage';
 import RegisterPage from './pages/RegisterPage';
@@ -50,7 +50,7 @@ function App() {
           <Route path="/home" element={<PrivateRoute><HomePage /></PrivateRoute>} />
           <Route path="/inventory" element={<PrivateRoute><InventoryPage /></PrivateRoute>} />
           <Route path="/order" element={<PrivateRoute><OrderPage /></PrivateRoute>} />
-          <Route path="/history" element={<PrivateRoute><HistoryPage /></PrivateRoute>} />
+          <Route path="/activity" element={<PrivateRoute><ActivityPage /></PrivateRoute>} />
           <Route path="/account" element={<PrivateRoute><AccountPage /></PrivateRoute>} />
 
           {/* Catch-all route */}
