@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Container, Stack, Card, Button, Accordion, Table, Modal, Form, Row, Col } from 'react-bootstrap';
 import { getAllCategories } from "../services/categoryService";
+import { createLog } from "../services/inventoryLogService";
 import PageTabs from '../components/PageTabs';
 
 const HistoryPage = () => {
 
-  const firstName = sessionStorage.getItem("firstName");
+  const id = sessionStorage.getItem("userId");
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -15,15 +15,18 @@ const HistoryPage = () => {
     day: "numeric",
   });
 
-  const navigate = useNavigate();
-
-  const handleNavigate = () => {
-    navigate("/order");
-  };
-
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
   const [show, setShow] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [items, setItems] = useState([]);
+  const [log, setLog] = useState({
+    itemId: "",
+    quantityChanged: "",
+    changeType: "",
+    reason: "",
+  });
 
   const resetMessages = () => {
     setError(null);
@@ -35,13 +38,15 @@ const HistoryPage = () => {
     setSelectedCategory("");
     setItems([]);
     resetMessages();
+    setLog({
+      itemId: "",
+      quantityChanged: "",
+      changeType: "",
+      reason: "",
+    });
   };
 
   const handleShow = () => setShow(true);
-
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [items, setItems] = useState([]);
   
   const fetchCategories = async () => {
     try {
@@ -62,10 +67,42 @@ const HistoryPage = () => {
     setItems(category ? category.items : []);
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setLog((prevLog) => ({
+      ...prevLog,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const userId = sessionStorage.getItem('userId');
+
+    const logWithUserId = {
+      ...log,
+      itemId: parseInt(log.itemId, 10),
+      quantityChanged: parseInt(log.quantityChanged, 10), 
+      changedByUserId: userId 
+    };
+
+    try {
+      await createLog(logWithUserId);
+      setSuccess(true);
+      setTimeout(() => {
+        handleClose();
+      }, 1000);
+    } catch (error) {
+      setError("Oops! We couldn't create the inventory log. Please try again later.");
+      setSuccess(false);
+    }
+  };
+
   return (
     <Container className="main-container py-3">
       <Stack direction="horizontal" gap={3} className="m-0 p-3">
-        <h2>Activity</h2>
+        <h2>Activity {id}</h2>
         <p className="ms-auto">{today}</p>
       </Stack>
 
@@ -79,7 +116,7 @@ const HistoryPage = () => {
             </Modal.Header>
 
             <Modal.Body>
-              <Form id="inventoryLogForm">
+              <Form id="inventoryLogForm" onSubmit={handleSubmit}>
                 <Row className="mb-3">
                   <Form.Group as={Col} controlId="itemCategory">
                     <Form.Label>Category</Form.Label>
@@ -102,6 +139,8 @@ const HistoryPage = () => {
                       name="itemId"
                       disabled={!selectedCategory}
                       required
+                      value={log.itemId}
+                      onChange={handleChange}
                     >
                       {!selectedCategory ? (
                         <option value="">Select a category</option>
@@ -122,18 +161,28 @@ const HistoryPage = () => {
                 </Row>
                 
                 <Row className="mb-3">
-                  <Form.Group as={Col} controlId="itemChangeQuantity">
+                  <Form.Group as={Col} controlId="itemQuantityChange">
                     <Form.Label>Change Quantity</Form.Label>
                     <Form.Control
                       type="text"
-                      name="quantity"
+                      name="quantityChanged"
                       placeholder="Enter quantity"
+                      required
+                      value={log.quantityChanged}
+                      onChange={handleChange}
                     />
                   </Form.Group>
                   <Form.Group as={Col} controlId="itemChangeType">
                     <Form.Label>Change Type</Form.Label>
-                    <Form.Select>
+                    <Form.Select
+                      name="changeType"
+                      required
+                      value={log.changeType}
+                      onChange={handleChange}
+                    >
                       <option value="">Select...</option>
+                      <option value="RESTOCK">RESTOCK</option>
+                      <option value="USAGE">USAGE</option>
                     </Form.Select>
                   </Form.Group>
                 </Row>
@@ -143,12 +192,14 @@ const HistoryPage = () => {
                   <Form.Control
                     as="textarea"
                     rows={2}
-                    name="description"
+                    name="reason"
                     placeholder="Enter description"
+                    value={log.reason}
+                    onChange={handleChange}
                   />
                 </Form.Group>
                 {error && <div className='alert alert-danger'>{error}</div>}
-                {success && <div className='alert alert-success'>New item added successfully!</div>}
+                {success && <div className='alert alert-success'>New inventory log added successfully!</div>}
               </Form>
             </Modal.Body>
 
@@ -156,7 +207,7 @@ const HistoryPage = () => {
               <Button variant="secondary" onClick={handleClose}>
                 Close
               </Button>
-              <Button variant="primary" type="submit" form="addItemForm">
+              <Button variant="primary" type="submit" form="inventoryLogForm">
                 Submit
               </Button>
             </Modal.Footer>
