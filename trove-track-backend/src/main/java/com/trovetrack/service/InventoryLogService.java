@@ -12,7 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class InventoryLogService {
 
     public InventoryLogDto createInventoryLog(InventoryLogDto inventoryLogDto) {
         InventoryLog newLog = convertToInventoryLogEntity(inventoryLogDto);
-        newLog.setChangeDate(LocalDateTime.now());
+        newLog.setChangeDate(LocalDate.now());
 
         Item item = newLog.getItem();
         if (newLog.getChangeType() == ChangeType.RESTOCK) {
@@ -66,6 +66,7 @@ public class InventoryLogService {
         InventoryLogDto inventoryLogDto = new InventoryLogDto();
         inventoryLogDto.setId(inventoryLog.getId());
         inventoryLogDto.setItemId(inventoryLog.getItem().getId());
+        inventoryLogDto.setItemName(inventoryLog.getItem().getName());
         inventoryLogDto.setQuantityChanged(inventoryLog.getQuantityChanged());
         inventoryLogDto.setChangeType(inventoryLog.getChangeType());
         inventoryLogDto.setChangeDate(inventoryLog.getChangeDate());

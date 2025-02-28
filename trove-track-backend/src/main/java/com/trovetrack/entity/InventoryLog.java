@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "inventory_logs")
@@ -27,7 +27,7 @@ public class InventoryLog {
     @Enumerated(EnumType.STRING) // Stores the value as a string in the database
     private ChangeType changeType;
 
-    private LocalDateTime changeDate;
+    private LocalDate changeDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
