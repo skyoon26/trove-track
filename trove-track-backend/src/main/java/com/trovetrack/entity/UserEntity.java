@@ -1,10 +1,10 @@
 package com.trovetrack.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ public class UserEntity {
     @JoinColumn(name = "role_id", referencedColumnName = "id") // Creates a foreign key column in "users" table
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    private List<Order> orders = new ArrayList<>();
+    @OneToMany(mappedBy = "changedBy", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<InventoryLog> logs = new ArrayList<>();
 }
