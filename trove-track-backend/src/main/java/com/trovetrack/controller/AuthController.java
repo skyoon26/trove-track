@@ -75,4 +75,14 @@ public class AuthController {
         String token = jwtGenerator.generateToken(authentication);
         return new ResponseEntity<>(new AuthResponseDto(token), HttpStatus.OK);
     }
+
+    @GetMapping("/account")
+    public ResponseEntity<UserEntity> getAccountInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
 }
