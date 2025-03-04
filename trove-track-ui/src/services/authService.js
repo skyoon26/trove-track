@@ -43,3 +43,19 @@ export const register = async (userData) => {
     throw error;
   }
 };
+
+export const getAccount = async () => {
+  const token = sessionStorage.getItem("authToken");
+  try {
+    const response = await axios.get(
+      `${API_URL}/account`,
+      { headers: {
+        Authorization: token,
+      }}
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching account: ", error);
+    throw error;
+  }
+};
