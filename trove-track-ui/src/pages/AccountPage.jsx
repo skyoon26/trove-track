@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Container, Stack, Card, Button, Col, Row, Modal, InputGroup, Form } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
+import { Container, Stack, Card, Button, Col, Row, Modal, InputGroup, Form, ListGroup } from 'react-bootstrap';
+import { getAccount } from '../services/authService';
 import PageTabs from '../components/PageTabs';
 
 const AccountPage = () => {
@@ -12,10 +13,24 @@ const AccountPage = () => {
     day: "numeric",
   });
 
-  const [show, setShow] = useState(false);
+  const [account, setAccount] = useState([]);
+  const [error, setError] = useState(null);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  useEffect(() => {
+    const fetchAccount = async () => {
+      try {
+        const data = await getAccount();
+        setAccount(data);
+      } catch (error) {
+        setError("Oops! We couldn't fetch the account. Please try again.");
+      }
+    };
+
+    fetchAccount();
+  }, []);
 
   return (
     <Container className="main-container py-3">
@@ -33,9 +48,14 @@ const AccountPage = () => {
             </Col>
           </Row>
         </Card.Header>
-        
         <Card.Body>
-          <Card.Text>Account details here</Card.Text>
+          <ListGroup variant="flush">
+            <ListGroup.Item><label className="fw-bold me-2">First Name:</label> {account?.firstName}</ListGroup.Item>
+            <ListGroup.Item><label className="fw-bold me-2">Last Name:</label> {account?.lastName}</ListGroup.Item>
+            <ListGroup.Item><label className="fw-bold me-2">Username:</label> {account?.username}</ListGroup.Item>
+            <ListGroup.Item><label className="fw-bold me-2">Email:</label> {account?.email}</ListGroup.Item>
+            <ListGroup.Item><label className="fw-bold me-2">Role:</label> {account?.role?.name || "N/A"}</ListGroup.Item>
+          </ListGroup>
         </Card.Body>
       </Card>
       <PageTabs />
