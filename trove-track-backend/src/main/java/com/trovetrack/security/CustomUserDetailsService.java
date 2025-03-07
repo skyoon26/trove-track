@@ -35,6 +35,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     // This method converts a list of roles (ADMIN, USER) into Spring Security authorities to manage access control
     private Collection<GrantedAuthority> mapRoleToAuthorities(Role role) {
 
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
     }
 }
