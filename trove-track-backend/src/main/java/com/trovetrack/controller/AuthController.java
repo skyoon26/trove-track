@@ -3,11 +3,13 @@ package com.trovetrack.controller;
 import com.trovetrack.dto.AuthResponseDto;
 import com.trovetrack.dto.LoginDto;
 import com.trovetrack.dto.RegisterDto;
+import com.trovetrack.dto.UpdateUserDto;
 import com.trovetrack.entity.Role;
 import com.trovetrack.entity.UserEntity;
 import com.trovetrack.repository.RoleRepository;
 import com.trovetrack.repository.UserRepository;
 import com.trovetrack.security.JwtGenerator;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +17,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -84,5 +89,35 @@ public class AuthController {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @PatchMapping("/account/update")
+    public ResponseEntity<?> updateAccount(Principal principal, @RequestBody UpdateUserDto updateUserDto) {
+        String username = principal.getName();
+
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (updateUserDto.getFirstName() != null) {
+            user.setFirstName(updateUserDto.getFirstName());
+        }
+        if (updateUserDto.getLastName() != null) {
+            user.setLastName(updateUserDto.getLastName());
+        }
+        if (updateUserDto.getEmail() != null) {
+            user.setEmail(updateUserDto.getEmail());
+        }
+        if (updateUserDto.getUsername() != null) {
+            user.setUsername(updateUserDto.getUsername());
+        }
+        if (updateUserDto.getRole() != null) {
+            String roleName = updateUserDto.getRole();
+            Role role = roleRepository.findByName(roleName)
+                            .orElseThrow(() -> new EntityNotFoundException("Role with name " + roleName + " not found"));
+            user.setRole(role);
+        }
+
+        userRepository.save(user);
+        return ResponseEntity.ok("Account updated successfully!");
     }
 }
