@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Container, Stack, Card, Button, Col, Row, Modal, InputGroup, Form, ListGroup } from 'react-bootstrap';
-import { getAccount } from '../services/authService';
+import { getAccount, updateAccount } from '../services/authService';
 import PageTabs from '../components/PageTabs';
 
 const AccountPage = () => {
@@ -17,6 +17,13 @@ const AccountPage = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [show, setShow] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    username: "",
+    role: ""
+  })
 
   const handleClose = () => {
     setShow(false);
@@ -24,7 +31,16 @@ const AccountPage = () => {
     setError(null);
   };
 
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    setFormData({
+      firstName: account.firstName || "",
+      lastName: account.lastName || "",
+      email: account.email || "",
+      username: account.username || "",
+      role: account.role?.name || ""
+    });
+    setShow(true);
+  };
 
   useEffect(() => {
     const fetchAccount = async () => {
@@ -38,6 +54,30 @@ const AccountPage = () => {
 
     fetchAccount();
   }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await updateAccount(formData);
+      setSuccess(true);
+      setError(null);
+      const updatedData = await getAccount();
+      setAccount(updatedData);
+      setTimeout(() => handleClose(), 1000);
+    } catch (err) {
+      setError("Oops! We couldn't update the account. Please try again.");
+      setSuccess(false);
+    }
+  };
 
   return (
     <Container className="main-container py-3">
@@ -58,7 +98,7 @@ const AccountPage = () => {
                 </Modal.Header>
 
                 <Modal.Body>
-                  <Form id="editAccountForm">
+                  <Form id="editAccountForm" onSubmit={handleSubmit}>
                   <Row className="mb-3">
                     <Form.Group as={Col} controlId="accountFirstName">
                       <Form.Label>First Name</Form.Label>
@@ -69,6 +109,8 @@ const AccountPage = () => {
                         required
                         autoFocus
                         autoComplete="off"
+                        value={formData.firstName}
+                        onChange={handleChange}
                       />
                     </Form.Group>
                     <Form.Group as={Col} controlId="accountLastName">
@@ -80,6 +122,8 @@ const AccountPage = () => {
                         required
                         autoFocus
                         autoComplete="off"
+                        value={formData.lastName}
+                        onChange={handleChange}
                       />
                     </Form.Group>
                   </Row>
@@ -91,25 +135,8 @@ const AccountPage = () => {
                         type="text"
                         name="email"
                         placeholder="Enter email"
-                      />
-                    </Form.Group>
-                    <Form.Group as={Col} controlId="accountUsername">
-                      <Form.Label>Username</Form.Label>
-                      <Form.Control
-                        type="text"
-                        name="username"
-                        placeholder="Enter username"
-                      />
-                    </Form.Group>
-                  </Row>
-                  
-                  <Row className="mb-3">
-                    <Form.Group as={Col} controlId="accountPassword">
-                      <Form.Label>Password</Form.Label>
-                      <Form.Control
-                        type="text"
-                        name="password"
-                        placeholder="Enter password"
+                        value={formData.email}
+                        onChange={handleChange}
                       />
                     </Form.Group>
                     <Form.Group as={Col} controlId="accountRole">
@@ -117,6 +144,8 @@ const AccountPage = () => {
                       <Form.Select
                         name="role"
                         required
+                        value={formData.role}
+                        onChange={handleChange}
                       >
                         <option value="">Select...</option>
                         <option>USER</option>
@@ -144,9 +173,9 @@ const AccountPage = () => {
 
         <Card.Body>
           <ListGroup variant="flush">
+            <ListGroup.Item><label className="fw-bold me-2">Username:</label> {account?.username}</ListGroup.Item>
             <ListGroup.Item><label className="fw-bold me-2">First Name:</label> {account?.firstName}</ListGroup.Item>
             <ListGroup.Item><label className="fw-bold me-2">Last Name:</label> {account?.lastName}</ListGroup.Item>
-            <ListGroup.Item><label className="fw-bold me-2">Username:</label> {account?.username}</ListGroup.Item>
             <ListGroup.Item><label className="fw-bold me-2">Email:</label> {account?.email}</ListGroup.Item>
             <ListGroup.Item><label className="fw-bold me-2">Role:</label> {account?.role?.name || "N/A"}</ListGroup.Item>
           </ListGroup>
