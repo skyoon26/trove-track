@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Container, Stack, Card, Button, Accordion, Modal, InputGroup, Form, Table, Row, Col } from 'react-bootstrap';
+import { Container, Stack, Card, Button, Accordion, Modal, Form, Table, Row, Col } from 'react-bootstrap';
 import { createCategory, getAllCategories } from '../services/categoryService';
 import { createItem } from '../services/itemService';
 import PageTabs from '../components/PageTabs';
@@ -76,6 +76,7 @@ const InventoryPage = () => {
     try {
       await createCategory(categoryName);
       setSuccess(true);
+      fetchCategories();
     } catch (error) {
       setError("Oops! We couldn't add the new category. Please try again later.");
       setSuccess(false);
@@ -119,7 +120,7 @@ const InventoryPage = () => {
     const { name, value } = e.target;
     setItemData({
       ...itemData,
-      [name]: value,
+      [name]: value
     });
   };
 
@@ -322,7 +323,7 @@ const InventoryPage = () => {
       <Accordion alwaysOpen className="pt-2">
         {categories.length === 0 ? (
           <Accordion.Item>
-            <Accordion.Header>No Inventory</Accordion.Header>
+            <Accordion.Header>No inventory added</Accordion.Header>
           </Accordion.Item>
         ) : (
           categories.map(category => (

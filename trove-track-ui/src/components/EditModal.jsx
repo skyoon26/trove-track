@@ -5,7 +5,6 @@ import { updateItem } from '../services/itemService';
 const EditModal = ({ categories, item, fetchCategories }) => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
-
   const [show, setShow] = useState(false);
   const [itemData, setItemData] = useState({
     categoryId: item.categoryId,
@@ -62,9 +61,7 @@ const EditModal = ({ categories, item, fetchCategories }) => {
       await updateItem(item.id, updatedItemData);
       setSuccess(true);
       fetchCategories();
-      setTimeout(() => {
-        handleClose();
-      }, 1000);
+      setTimeout(() => handleClose(), 1000);
     } catch (error) {
       setError("Oops! We couldn't edit the item. Please try again later.");
       setSuccess(false);
