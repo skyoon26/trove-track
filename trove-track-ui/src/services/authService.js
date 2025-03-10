@@ -59,3 +59,19 @@ export const getAccount = async () => {
     throw error;
   }
 };
+
+export const updateAccount = async (account) => {
+  const token = sessionStorage.getItem("authToken");
+  try {
+    const response = await axios.patch(
+      `${API_URL}/account/update`, 
+      account,
+      { headers: {
+        Authorization: token,
+      }});
+    return response.data;
+  } catch (error) {
+    console.error("Error updating account: ", error);
+    throw error;
+  }
+};
