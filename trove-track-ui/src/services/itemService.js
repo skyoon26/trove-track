@@ -33,3 +33,19 @@ export const updateItem = async (itemId, item) => {
     throw error;
   }
 };
+
+export const getItem = async (itemId, item) => {
+  const token = sessionStorage.getItem("authToken");
+  try {
+    const response = await axios.get(
+      `${API_URL}/${itemId}`, 
+      item,
+      { headers: {
+        Authorization: token,
+      }});
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching item: ", error);
+    throw error;
+  }
+};
