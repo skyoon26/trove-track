@@ -4,6 +4,7 @@ import { createCategory, getAllCategories } from '../services/categoryService';
 import { createItem } from '../services/itemService';
 import PageTabs from '../components/PageTabs';
 import EditModal from '../components/EditModal';
+import StockIndicator from '../components/StockIndicator';
 
 const InventoryPage = () => {
   const firstName = sessionStorage.getItem("firstName");
@@ -336,11 +337,23 @@ const InventoryPage = () => {
                 {category.items.length == 0 ? (
                   <div>No items added</div>
                 ) : (
-                  <Table striped bordered hover responsive>
-                    <tbody>
+                  <Table striped bordered hover responsive className="m-0">
+                    <thead>
+                      <tr>
+                        <th>Status</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Location</th>
+                        <th>Stock Level</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody >
                       {category.items.map((item, index) => (
                         <tr key={index}>
-                          <td className="fw-bold">{item.name}</td>
+                          <StockIndicator quantity={item.quantity} minQuantity={item.minQuantity}/>
+                          <td>{item.name}</td>
                           <td className="item-description-text">{item.description}</td>
                           <td>{item.location}</td>
                           <td>{item.quantity}</td>
