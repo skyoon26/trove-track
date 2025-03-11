@@ -5,9 +5,7 @@ const API_URL = "http://localhost:8080/api/items";
 export const createItem = async (item) => {
   const token = sessionStorage.getItem("authToken");
   try {
-    const response = await axios.post(
-      API_URL, 
-      item,
+    const response = await axios.post(API_URL, item,
       { headers: {
         Authorization: token,
       }});
@@ -21,9 +19,7 @@ export const createItem = async (item) => {
 export const updateItem = async (itemId, item) => {
   const token = sessionStorage.getItem("authToken");
   try {
-    const response = await axios.patch(
-      `${API_URL}/${itemId}`, 
-      item,
+    const response = await axios.patch(`${API_URL}/${itemId}`, item,
       { headers: {
         Authorization: token,
       }});
@@ -34,18 +30,30 @@ export const updateItem = async (itemId, item) => {
   }
 };
 
-export const getItem = async (itemId, item) => {
+export const getItem = async (itemId) => {
   const token = sessionStorage.getItem("authToken");
   try {
-    const response = await axios.get(
-      `${API_URL}/${itemId}`, 
-      item,
+    const response = await axios.get(`${API_URL}/${itemId}`, 
       { headers: {
         Authorization: token,
       }});
     return response.data;
   } catch (error) {
     console.error("Error fetching item: ", error);
+    throw error;
+  }
+};
+
+export const deleteItem = async (itemId) => {
+  const token = sessionStorage.getItem("authToken");
+  try {
+    const response = await axios.delete(`${API_URL}/${itemId}`, 
+      { headers: {
+        Authorization: token,
+      }});
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting item: ", error);
     throw error;
   }
 };
