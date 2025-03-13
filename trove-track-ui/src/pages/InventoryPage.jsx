@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Container, Stack, Card, Button, Accordion, Modal, Form, Table, Row, Col } from 'react-bootstrap';
 import { createCategory, getAllCategories } from '../services/categoryService';
-import { createItem } from '../services/itemService';
+import { createItem, deleteItem } from '../services/itemService';
 import PageTabs from '../components/PageTabs';
 import EditModal from '../components/EditModal';
 import StockIndicator from '../components/StockIndicator';
@@ -152,6 +152,24 @@ const InventoryPage = () => {
       }, 1000);
     }
   }, [success]);
+
+  const [message, setMessage] = useState("");
+
+  const handleDeleteItem = async (itemId) => {
+    try {
+      const response = await deleteItem(itemId);
+      setMessage("Item deleted successfully!");
+      setTimeout(() => {
+        setMessage("");
+      }, 1500);
+      fetchCategories();
+    } catch (error) {
+      setMessage("Oops! We couldn't delete the item. Please try again later.");
+      setTimeout(() => {
+        setMessage("");
+      }, 1500);
+    }
+  }
 
   return (
     <Container className="main-container py-3">
@@ -365,7 +383,7 @@ const InventoryPage = () => {
                               fetchCategories={fetchCategories}
                               resetMessages={resetMessages}
                             />{" "}
-                            <Button variant="outline-danger" className="px-2 py-1">
+                            <Button variant="outline-danger" className="px-2 py-1" onClick={() => handleDeleteItem(item.id)}>
                               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
                                 <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
                                 <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
@@ -382,7 +400,9 @@ const InventoryPage = () => {
           ))
         )}
       </Accordion>
-      
+      {message && (<div className={`alert ${message.includes("success") ? "alert-success" : "alert-danger"} mt-2`}>
+        {message}
+      </div>)}
       <PageTabs />
     </Container>
   )
