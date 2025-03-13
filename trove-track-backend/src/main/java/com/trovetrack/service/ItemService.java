@@ -134,9 +134,9 @@ public class ItemService {
         item.setName(itemDto.getName());
         item.setDescription(itemDto.getDescription());
         item.setLocation(itemDto.getLocation());
-        item.setQuantity(itemDto.getQuantity());
-        item.setPrice(itemDto.getPrice());
-        item.setMinQuantity(itemDto.getMinQuantity());
+        item.setQuantity(itemDto.getQuantity() != null ? itemDto.getQuantity() : 0);
+        item.setPrice(itemDto.getPrice() != null ? itemDto.getPrice() : 0.00);
+        item.setMinQuantity(itemDto.getMinQuantity() != null ? itemDto.getMinQuantity() : 1);
         item.setAsin(itemDto.getAsin());
 
         Category category = categoryRepository.findById(itemDto.getCategoryId())
