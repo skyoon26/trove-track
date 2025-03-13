@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Button, Modal, Card, ListGroup } from "react-bootstrap";
+import placeholderImage from "../assets/images/no-image-placeholder.png";
 
-const ViewModal = () => {
+const ViewModal = ({ item }) => {
   const [show, setShow] = useState(false);
 
   const handleShow = () => setShow(true);
@@ -18,7 +19,7 @@ const ViewModal = () => {
         <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
       </svg>
       </Button>
-      <Modal size="lg" centered show={show} onHide={handleClose}>
+      <Modal centered show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Item Details</Modal.Title>
         </Modal.Header>
@@ -26,16 +27,30 @@ const ViewModal = () => {
         <Modal.Body>
         <Card>
             <Card.Body>
-              <Card.Img variant="top" />
+              <Card.Img variant="top" src={placeholderImage} style={{ width: "430px", height: "500px" }}/>
             </Card.Body>
             <ListGroup variant="flush">
-              <ListGroup.Item>Name: </ListGroup.Item>
-              <ListGroup.Item>Amazon ID Number: </ListGroup.Item>
-              <ListGroup.Item>Location: </ListGroup.Item>
-              <ListGroup.Item>Price: </ListGroup.Item>
-              <ListGroup.Item>Stock Level: </ListGroup.Item>
-              <ListGroup.Item>Minimum Quantity: </ListGroup.Item>
-              <ListGroup.Item>Description: </ListGroup.Item>
+              <ListGroup.Item>
+                <span className="fw-bold">Name:</span> {item.name}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <span className="fw-bold">Amazon ID Number:</span> {item.asin || "N/A"}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <span className="fw-bold">Location:</span> {item.location}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <span className="fw-bold">Price:</span> {item.price}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <span className="fw-bold">Stock Level:</span> {item.quantity}
+              </ListGroup.Item>
+              <ListGroup.Item>
+              <span className="fw-bold">Minimum Quantity:</span> {item.minQuantity}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <span className="fw-bold">Description:</span> {item.description}
+              </ListGroup.Item>
             </ListGroup>
           </Card>
         </Modal.Body>

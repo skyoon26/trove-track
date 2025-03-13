@@ -343,7 +343,6 @@ const InventoryPage = () => {
                       <tr>
                         <th>Status</th>
                         <th>Name</th>
-                        <th>Description</th>
                         <th>Location</th>
                         <th>Stock Level</th>
                         <th>Price</th>
@@ -355,12 +354,11 @@ const InventoryPage = () => {
                         <tr key={index}>
                           <StockIndicator quantity={item.quantity} minQuantity={item.minQuantity}/>
                           <td>{item.name}</td>
-                          <td className="item-description-text">{item.description}</td>
                           <td>{item.location}</td>
                           <td>{item.quantity}</td>
                           <td>${item.price}</td>
                           <td>
-                            <ViewModal />{" "}
+                            <ViewModal item={item} />{" "}
                             <EditModal 
                               categories={categories}
                               item={item}
