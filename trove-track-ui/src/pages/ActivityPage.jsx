@@ -254,7 +254,11 @@ const ActivityPage = () => {
                       <td>{log.changeDate}</td>
                       <td>{log.itemName}</td>
                       <td>{log.quantityChanged}</td>
-                      <td>{log.changeType}</td>
+                      <td
+                        style={{color: log.changeType === "RESTOCK" ? 'green' : 'red'}}
+                      >
+                        {log.changeType}
+                        </td>
                       <td>ID {log.changedByUserId}</td>
                       <td>{log.reason}</td>
                     </tr>
