@@ -17,10 +17,7 @@ const EditModal = ({ categories, item, fetchCategories }) => {
     asin: item.asin
   });
 
-  const handleShow = () => setShow(true);
-
-  const handleClose = () => {
-    setShow(false);
+  const handleShow = () => {
     setItemData({
       categoryId: item.categoryId,
       name: item.name,
@@ -31,14 +28,19 @@ const EditModal = ({ categories, item, fetchCategories }) => {
       description: item.description,
       asin: item.asin,
     });
+    setShow(true);
+  };
+
+  const handleClose = () => {
+    setShow(false);
     setSuccess(false);
     setError(null);
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setItemData((currentItemData) => ({
-      ...currentItemData,
+    setItemData((prev) => ({
+      ...prev,
       [name]: value
     }));
   }
@@ -46,19 +48,16 @@ const EditModal = ({ categories, item, fetchCategories }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const updatedItemData = {
-      categoryId: itemData.categoryId,
-      name: itemData.name,
-      quantity: itemData.quantity,
-      minQuantity: itemData.minQuantity,
-      price: itemData.price,
-      location: itemData.location,
-      description: itemData.description,
-      asin: itemData.asin
-    };
+    setError(null);
+    setSuccess(false);
+
+    if (itemData.name.length < 3 || itemData.name.length > 50) {
+      setError("Item name must be between 3 and 50 characters.");
+      return;
+    }
 
     try {
-      await updateItem(item.id, updatedItemData);
+      await updateItem(item.id, itemData);
       setSuccess(true);
       fetchCategories();
       setTimeout(() => handleClose(), 1000);
@@ -70,7 +69,7 @@ const EditModal = ({ categories, item, fetchCategories }) => {
 
   return (
     <>
-      <Button variant="outline-primary" className="p-2" onClick={handleShow}>
+      <Button variant="outline-warning" className="px-2 py-1" onClick={handleShow}>
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil" viewBox="0 0 16 16">
           <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
         </svg>
