@@ -144,9 +144,9 @@ const HomePage = () => {
               key={log.id}
               eventKey={log.id.toString()}
             >
-              <Accordion.Header>{log.id}</Accordion.Header>
+              <Accordion.Header>Inventory Log #{log.id}</Accordion.Header>
               <Accordion.Body>
-                <Table striped bordered hover responsive>
+                <Table striped bordered hover responsive className="m-0">
                   <thead>
                     <tr>
                       <th>Date</th>
@@ -159,7 +159,12 @@ const HomePage = () => {
                   </thead>
                   <tbody>
                     <tr key={log.id}>
-                      <td>{log.changeDate}</td>
+                      <td>
+                        {(() => {
+                          const [year, month, day] = log.changeDate.split("-");
+                          return `${month}/${day}/${year}`;
+                        })()}
+                      </td>
                       <td>{log.itemName}</td>
                       <td>{log.quantityChanged}</td>
                       <td>{log.changeType}</td>
