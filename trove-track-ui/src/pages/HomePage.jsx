@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Card, Stack, Button, Accordion, Row, Col, Table } from 'react-bootstrap';
 import { getAllCategories } from '../services/categoryService';
 import { getAllLogs } from '../services/inventoryLogService';
+import { getAllItems } from '../services/itemService';
 import './pages.css';
 import PageTabs from '../components/PageTabs';
 import SummaryCard from '../components/SummaryCard';
+import StockIndicator from '../components/StockIndicator';
 
 const HomePage = () => {
 
@@ -20,6 +22,7 @@ const HomePage = () => {
   
   // Manages category state, fetches category data from API, and updates UI
   const [categories, setCategories] = useState([]);
+  const [items, setItems] = useState([]);
   const [logs, setLogs] = useState([]);
   
   const fetchCategories = async () => {
@@ -30,6 +33,15 @@ const HomePage = () => {
       console.log(error);
     }
   };
+
+  const fetchItems = async () => {
+    try {
+      const data = await getAllItems();
+      setItems(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const fetchLogs = async () => {
       try {
@@ -42,6 +54,7 @@ const HomePage = () => {
 
   useEffect(() => {
     fetchCategories();
+    fetchItems();
     fetchLogs();
   }, []);
 
@@ -89,42 +102,42 @@ const HomePage = () => {
         </Stack>
       </Card>
       <Accordion alwaysOpen className="pt-2">
-        <Accordion.Item eventKey="0">
-          <Accordion.Header>Accordion Item #1</Accordion.Header>
-          <Accordion.Body>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Item eventKey="1">
-          <Accordion.Header>Accordion Item #2</Accordion.Header>
-          <Accordion.Body>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Item eventKey="3">
-          <Accordion.Header>Accordion Item #3</Accordion.Header>
-          <Accordion.Body>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </Accordion.Body>
-        </Accordion.Item>
+        {items.length === 0 ? (
+          <Accordion.Item>
+            <Accordion.Header>No items added</Accordion.Header>
+          </Accordion.Item>
+        ) : (
+          items.map(item => (
+            <Accordion.Item
+              key={item.id}
+              eventKey={item.id.toString()}
+            >
+              <Accordion.Header>{item.name}</Accordion.Header>
+              <Accordion.Body>
+                <Table striped bordered hover responsive className="m-0">
+                  <thead>
+                    <tr>
+                      <th>Status</th>
+                      <th>Name</th>
+                      <th>Location</th>
+                      <th>Stock Level</th>
+                      <th>Price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr key={item.id}>
+                      <StockIndicator quantity={item.quantity} minQuantity={item.minQuantity} />
+                      <td>{item.quantity}</td>
+                      <td>{item.location}</td>
+                      <td>{item.description}</td>
+                      <td>{item.price}</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </Accordion.Body>
+            </Accordion.Item>
+          ))
+        )}
       </Accordion>
       
       <Card className="p-2 mt-4">
