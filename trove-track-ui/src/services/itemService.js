@@ -44,6 +44,22 @@ export const getItem = async (itemId) => {
   }
 };
 
+export const getAllItems = async () => {
+  const token = sessionStorage.getItem("authToken");
+  try {
+    const response = await axios.get(
+      API_URL,
+      { headers: {
+        Authorization: token,
+      }}
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching items: ", error);
+    throw error;
+  }
+};
+
 export const deleteItem = async (itemId) => {
   const token = sessionStorage.getItem("authToken");
   try {
