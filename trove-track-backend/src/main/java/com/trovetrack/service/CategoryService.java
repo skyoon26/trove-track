@@ -98,6 +98,7 @@ public class CategoryService {
         itemDto.setPrice(item.getPrice());
         itemDto.setMinQuantity(item.getMinQuantity());
         itemDto.setCategoryId(item.getCategory().getId());
+        itemDto.setAsin(item.getAsin());
 
         return itemDto;
     }
