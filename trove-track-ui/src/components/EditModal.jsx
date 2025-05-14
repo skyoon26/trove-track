@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, Modal, Form, Row, Col } from "react-bootstrap";
 import { updateItem } from '../services/itemService';
 
-const EditModal = ({ categories, item, fetchCategories }) => {
+const EditModal = ({ categories, item, refetch }) => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
   const [show, setShow] = useState(false);
@@ -59,7 +59,7 @@ const EditModal = ({ categories, item, fetchCategories }) => {
     try {
       await updateItem(item.id, itemData);
       setSuccess(true);
-      fetchCategories();
+      await refetch();
       setTimeout(() => handleClose(), 1000);
     } catch (error) {
       setError("Oops! We couldn't edit the item. Please try again later.");

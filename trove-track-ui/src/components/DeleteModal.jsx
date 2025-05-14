@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, Modal } from "react-bootstrap";
 import { deleteItem } from '../services/itemService';
 
-const DeleteModal = ({ item, fetchCategories }) => {
+const DeleteModal = ({ item, refetch }) => {
   const [show, setShow] = useState(false);
   const [message, setMessage] = useState("");
   
@@ -13,7 +13,7 @@ const DeleteModal = ({ item, fetchCategories }) => {
       setTimeout(() => {
         setShow(false);
         setMessage("");
-        fetchCategories();
+        refetch();
       }, 1500);
     } catch (error) {
       setMessage("Oops! We couldn't delete the item. Please try again later.");
