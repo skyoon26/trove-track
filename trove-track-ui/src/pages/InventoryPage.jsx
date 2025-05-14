@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Container, Stack, Card, Button, Accordion, Modal, Form, Table, Row, Col } from 'react-bootstrap';
-import { createCategory, getAllCategories } from '../services/categoryService';
-import { createItem, deleteItem } from '../services/itemService';
+import { createCategory } from '../services/categoryService';
+import { createItem } from '../services/itemService';
 import PageTabs from '../components/PageTabs';
 import EditModal from '../components/EditModal';
 import StockIndicator from '../components/StockIndicator';
 import ViewModal from '../components/ViewModal';
 import DeleteModal from '../components/DeleteModal';
+import useCategories from '../hooks/useCategories';
 
 const InventoryPage = () => {
+  const { categories, error: categoryError, refetch } = useCategories();
+
   const firstName = sessionStorage.getItem("firstName");
 
   const today = new Date().toLocaleDateString("en-US", {
@@ -26,22 +29,6 @@ const InventoryPage = () => {
     setError(null);
     setSuccess(false);
   };
-
-  // Manages category state, fetches category data from API, and updates UI
-  const [categories, setCategories] = useState([]);
-  
-  const fetchCategories = async () => {
-    try {
-      const data = await getAllCategories();
-      setCategories(data);
-    } catch (error) {
-      setError("Oops! We couldn't fetch the categories. Please try again.");
-    }
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   // Manages state and handlers for the "Add Category" and "Add Item" buttons and modals
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -63,7 +50,7 @@ const InventoryPage = () => {
       location: "",
       description: "",
       categoryId: "",
-      asin: ""
+      asin: "",
     });
     resetMessages();
   };
@@ -79,9 +66,11 @@ const InventoryPage = () => {
     try {
       await createCategory(categoryName);
       setSuccess(true);
-      fetchCategories();
+      await refetch();
     } catch (error) {
-      setError("Oops! We couldn't add the new category. Please try again later.");
+      setError(
+        "Oops! We couldn't add the new category. Please try again later."
+      );
       setSuccess(false);
     }
   };
@@ -101,7 +90,7 @@ const InventoryPage = () => {
     price: "",
     location: "",
     description: "",
-    asin: ""
+    asin: "",
   });
 
   // Handles item addition
@@ -111,7 +100,7 @@ const InventoryPage = () => {
     try {
       await createItem(itemData);
       setSuccess(true);
-      fetchCategories(); // Re-fetches the categories to display the updated data
+      await refetch(); // Re-fetches the categories to display the updated data
     } catch (error) {
       setError("Oops! We couldn't add the new item. Please try again later.");
       setSuccess(false);
@@ -119,17 +108,22 @@ const InventoryPage = () => {
   };
 
   // Updates the state for a specific value in itemData
-  const handleItemChange = e => {
+  const handleItemChange = (e) => {
     const { name, value } = e.target;
     setItemData({
       ...itemData,
-      [name]: value
+      [name]: value,
     });
   };
 
   // Handles form submission for adding a new item
-  const handleSubmitItem = async e => {
+  const handleSubmitItem = async (e) => {
     e.preventDefault();
+
+    if (itemData.name.length < 3 || itemData.name.length > 50) {
+      setError("Item name must be between 3 and 50 characters.");
+      return;
+    }
 
     const item = {
       categoryId: itemData.categoryId,
@@ -139,7 +133,7 @@ const InventoryPage = () => {
       price: itemData.price,
       location: itemData.location,
       description: itemData.description,
-      asin: itemData.asin
+      asin: itemData.asin,
     };
     await handleAddItem(item);
   };
@@ -164,8 +158,19 @@ const InventoryPage = () => {
       <Card className="p-2 mt-3">
         <Stack direction="horizontal" gap={3}>
           <h3 className="m-0 p-2 fs-5 fw-bold">Inventory Actions</h3>
-          <Button variant="outline-primary" className="p-2 ms-auto" onClick={handleShowCategoryModal}>New Category</Button>
-          <Modal size="lg" centered show={showCategoryModal} onHide={handleCloseCategoryModal}>
+          <Button
+            variant="outline-primary"
+            className="p-2 ms-auto"
+            onClick={handleShowCategoryModal}
+          >
+            New Category
+          </Button>
+          <Modal
+            size="lg"
+            centered
+            show={showCategoryModal}
+            onHide={handleCloseCategoryModal}
+          >
             <Modal.Header closeButton>
               <Modal.Title>New Category</Modal.Title>
             </Modal.Header>
@@ -174,7 +179,7 @@ const InventoryPage = () => {
               <Form id="addCategoryForm" onSubmit={handleSubmitCategory}>
                 <Form.Group className="mb-3" controlId="categoryName">
                   <Form.Label>Category Name</Form.Label>
-                  <Form.Control 
+                  <Form.Control
                     type="text"
                     placeholder="Enter category name"
                     required
@@ -184,8 +189,12 @@ const InventoryPage = () => {
                     onChange={(e) => setCategoryName(e.target.value)}
                   />
                 </Form.Group>
-                {error && <div className='alert alert-danger'>{error}</div>}
-                {success && <div className='alert alert-success'>New category added successfully!</div>}
+                {error && <div className="alert alert-danger">{error}</div>}
+                {success && (
+                  <div className="alert alert-success">
+                    New category added successfully!
+                  </div>
+                )}
               </Form>
             </Modal.Body>
 
@@ -329,11 +338,8 @@ const InventoryPage = () => {
             <Accordion.Header>No inventory added</Accordion.Header>
           </Accordion.Item>
         ) : (
-          categories.map(category => (
-            <Accordion.Item
-              key={category.id}
-              eventKey={category.id.toString()}
-            >
+          categories.map((category) => (
+            <Accordion.Item key={category.id} eventKey={category.id.toString()}>
               <Accordion.Header>{category.name}</Accordion.Header>
               <Accordion.Body>
                 {category.items.length == 0 ? (
@@ -350,7 +356,7 @@ const InventoryPage = () => {
                         <th>Actions</th>
                       </tr>
                     </thead>
-                    <tbody >
+                    <tbody>
                       {category.items.map((item, index) => (
                         <tr key={index}>
                           <StockIndicator quantity={item.quantity} minQuantity={item.minQuantity}/>
@@ -363,12 +369,12 @@ const InventoryPage = () => {
                             <EditModal 
                               categories={categories}
                               item={item}
-                              fetchCategories={fetchCategories}
+                              refetch={refetch}
                               resetMessages={resetMessages}
                             />{" "}
-                            <DeleteModal 
+                            <DeleteModal
                               item={item}
-                              fetchCategories={fetchCategories}
+                              refetch={refetch}
                             />
                           </td>
                         </tr>
@@ -381,10 +387,10 @@ const InventoryPage = () => {
           ))
         )}
       </Accordion>
-  
+      
       <PageTabs />
     </Container>
-  )
-}
+  );
+};
 
 export default InventoryPage;
