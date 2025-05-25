@@ -8,8 +8,11 @@ import './pages.css';
 import PageTabs from '../components/PageTabs';
 import SummaryCard from '../components/SummaryCard';
 import StockIndicator from '../components/StockIndicator';
+import useCategories from '../hooks/useCategories';
 
 const HomePage = () => {
+  const { categories, refetchCategories } = useCategories();
+  const navigate = useNavigate();
 
   const firstName = sessionStorage.getItem("firstName");
 
@@ -19,20 +22,18 @@ const HomePage = () => {
     month: "long",
     day: "numeric",
   });
-  
-  // Manages category state, fetches category data from API, and updates UI
-  const [categories, setCategories] = useState([]);
+
   const [items, setItems] = useState([]);
   const [logs, setLogs] = useState([]);
-  
-  const fetchCategories = async () => {
-    try {
-      const data = await getAllCategories();
-      setCategories(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
+  const totalCategories = categories.length;
+    
+  let totalItems = 0;
+  categories.forEach(category => {
+    totalItems += category.items?.length || 0;
+  });
+
+  const recentLogs = logs.sort((a, b) => b.id - a.id).slice(0, 3);
 
   const fetchItems = async () => {
     try {
@@ -52,26 +53,15 @@ const HomePage = () => {
       }
     };
 
-  useEffect(() => {
-    fetchCategories();
-    fetchItems();
-    fetchLogs();
-  }, []);
-
-  const totalCategories = categories.length;
-    
-  let totalItems = 0;
-  categories.forEach(category => {
-    totalItems += category.items?.length || 0;
-  });
-
-  const recentLogs = logs.sort((a, b) => b.id - a.id).slice(0, 3);
-
-  const navigate = useNavigate();
-
   const handleNavigate = (route) => {
     navigate(route);
   };
+
+  useEffect(() => {
+    refetchCategories();
+    fetchItems();
+    fetchLogs();
+  }, []);
 
   return (
     <Container className="main-container py-3">
@@ -88,7 +78,7 @@ const HomePage = () => {
       </Card>
       <Row className="g-2 pt-2">
         <Col xs={12} md={6} lg={6}>
-          <SummaryCard title="Total Items" value={totalItems}/>
+          <SummaryCard title="Total Items" value={totalItems} />
         </Col>
         <Col xs={12} md={6} lg={6}>
           <SummaryCard title="Total Categories" value={totalCategories} />
@@ -107,11 +97,10 @@ const HomePage = () => {
             <Accordion.Header>No items added</Accordion.Header>
           </Accordion.Item>
         ) : (
-          items.map(item => (
-            <Accordion.Item
-              key={item.id}
-              eventKey={item.id.toString()}
-            >
+          items
+            .filter((item) => Number(item.quantity) < Number(item.minQuantity))
+            .map((item) => (
+            <Accordion.Item key={item.id} eventKey={item.id.toString()}>
               <Accordion.Header>{item.name}</Accordion.Header>
               <Accordion.Body>
                 <Table striped bordered hover responsive className="m-0">
@@ -191,10 +180,9 @@ const HomePage = () => {
           ))
         )}
       </Accordion>
-
       <PageTabs />
     </Container>
-  )
-}
+  );
+};
 
 export default HomePage;
