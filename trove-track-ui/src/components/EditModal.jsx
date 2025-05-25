@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Modal, Form, Row, Col } from "react-bootstrap";
 import { updateItem } from '../services/itemService';
 
@@ -17,6 +17,11 @@ const EditModal = ({ categories, item, refetchCategories }) => {
     asin: item.asin
   });
 
+  const resetMessages = () => {
+    setError(null);
+    setSuccess(false);
+  };
+
   const handleShow = () => {
     setItemData({
       categoryId: item.categoryId,
@@ -33,8 +38,7 @@ const EditModal = ({ categories, item, refetchCategories }) => {
 
   const handleClose = () => {
     setShow(false);
-    setSuccess(false);
-    setError(null);
+    resetMessages();
   };
 
   const handleChange = (e) => {
@@ -66,6 +70,14 @@ const EditModal = ({ categories, item, refetchCategories }) => {
       setSuccess(false);
     }
   };
+
+  useEffect(() => {
+      if (success) {
+        setTimeout(() => {
+          handleClose();
+        }, 1000);
+      }
+    }, [success]);
 
   return (
     <>
