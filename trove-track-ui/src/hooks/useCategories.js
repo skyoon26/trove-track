@@ -23,7 +23,7 @@ const useCategories = () => {
     fetchCategories();
   }, []);
 
-  return { categories, error, refetch: fetchCategories };
+  return { categories, refetchCategories: fetchCategories };
 };
 
 export default useCategories;

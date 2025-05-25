@@ -10,7 +10,7 @@ import DeleteModal from '../components/DeleteModal';
 import useCategories from '../hooks/useCategories';
 
 const InventoryPage = () => {
-  const { categories, error: categoryError, refetch } = useCategories();
+  const { categories, refetchCategories } = useCategories();
 
   const firstName = sessionStorage.getItem("firstName");
 
@@ -21,17 +21,27 @@ const InventoryPage = () => {
     day: "numeric",
   });
 
-  // Manages state for success and error message upon form submission
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [showItemModal, setShowItemModal] = useState(false);
+  const [categoryName, setCategoryName] = useState("");
+  const [itemData, setItemData] = useState({
+    categoryId: "",
+    name: "",
+    quantity: "",
+    minQuantity: "",
+    price: "",
+    location: "",
+    description: "",
+    asin: "",
+  });
 
   const resetMessages = () => {
     setError(null);
     setSuccess(false);
   };
 
-  // Manages state and handlers for the "Add Category" and "Add Item" buttons and modals
-  const [showCategoryModal, setShowCategoryModal] = useState(false);
   const handleCloseCategoryModal = () => {
     setShowCategoryModal(false);
     setCategoryName("");
@@ -39,7 +49,6 @@ const InventoryPage = () => {
   };
   const handleShowCategoryModal = () => setShowCategoryModal(true);
 
-  const [showItemModal, setShowItemModal] = useState(false);
   const handleCloseItemModal = () => {
     setShowItemModal(false);
     setItemData({
@@ -56,17 +65,13 @@ const InventoryPage = () => {
   };
   const handleShowItemModal = () => setShowItemModal(true);
 
-  // Initializes state for category name
-  const [categoryName, setCategoryName] = useState("");
-
-  // Handles category addition
   const handleAddCategory = async (categoryName) => {
     setSuccess(false); // Resets success message state
     setError(null); // Resets error message state
     try {
       await createCategory(categoryName);
       setSuccess(true);
-      await refetch();
+      await refetchCategories();
     } catch (error) {
       setError(
         "Oops! We couldn't add the new category. Please try again later."
@@ -81,18 +86,6 @@ const InventoryPage = () => {
     await handleAddCategory(categoryName);
   };
 
-  // Initializes state for item
-  const [itemData, setItemData] = useState({
-    categoryId: "",
-    name: "",
-    quantity: "",
-    minQuantity: "",
-    price: "",
-    location: "",
-    description: "",
-    asin: "",
-  });
-
   // Handles item addition
   const handleAddItem = async (itemData) => {
     setSuccess(false);
@@ -100,7 +93,7 @@ const InventoryPage = () => {
     try {
       await createItem(itemData);
       setSuccess(true);
-      await refetch(); // Re-fetches the categories to display the updated data
+      await refetchCategories(); // Re-fetches the categories to display the updated data
     } catch (error) {
       setError("Oops! We couldn't add the new item. Please try again later.");
       setSuccess(false);
@@ -369,12 +362,12 @@ const InventoryPage = () => {
                             <EditModal 
                               categories={categories}
                               item={item}
-                              refetch={refetch}
+                              refetchCategories={refetchCategories}
                               resetMessages={resetMessages}
                             />{" "}
                             <DeleteModal
                               item={item}
-                              refetch={refetch}
+                              refetchCategories={refetchCategories}
                             />
                           </td>
                         </tr>
