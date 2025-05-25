@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Container, Stack, Card, Button, Accordion, Modal, Form, Table, Row, Col } from 'react-bootstrap';
-import { createCategory } from '../services/categoryService';
 import { createItem } from '../services/itemService';
 import PageTabs from '../components/PageTabs';
 import EditModal from '../components/EditModal';
@@ -8,6 +7,7 @@ import StockIndicator from '../components/StockIndicator';
 import ViewModal from '../components/ViewModal';
 import DeleteModal from '../components/DeleteModal';
 import useCategories from '../hooks/useCategories';
+import NewCategoryModal from '../components/NewCategoryModal';
 
 const InventoryPage = () => {
   const { categories, refetchCategories } = useCategories();
@@ -23,9 +23,7 @@ const InventoryPage = () => {
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
-  const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showItemModal, setShowItemModal] = useState(false);
-  const [categoryName, setCategoryName] = useState("");
   const [itemData, setItemData] = useState({
     categoryId: "",
     name: "",
@@ -42,13 +40,6 @@ const InventoryPage = () => {
     setSuccess(false);
   };
 
-  const handleCloseCategoryModal = () => {
-    setShowCategoryModal(false);
-    setCategoryName("");
-    resetMessages();
-  };
-  const handleShowCategoryModal = () => setShowCategoryModal(true);
-
   const handleCloseItemModal = () => {
     setShowItemModal(false);
     setItemData({
@@ -64,27 +55,6 @@ const InventoryPage = () => {
     resetMessages();
   };
   const handleShowItemModal = () => setShowItemModal(true);
-
-  const handleAddCategory = async (categoryName) => {
-    setSuccess(false); // Resets success message state
-    setError(null); // Resets error message state
-    try {
-      await createCategory(categoryName);
-      setSuccess(true);
-      await refetchCategories();
-    } catch (error) {
-      setError(
-        "Oops! We couldn't add the new category. Please try again later."
-      );
-      setSuccess(false);
-    }
-  };
-
-  // Handles form submission for adding a new category
-  const handleSubmitCategory = async (e) => {
-    e.preventDefault();
-    await handleAddCategory(categoryName);
-  };
 
   // Handles item addition
   const handleAddItem = async (itemData) => {
@@ -135,7 +105,6 @@ const InventoryPage = () => {
   useEffect(() => {
     if (success) {
       setTimeout(() => {
-        handleCloseCategoryModal();
         handleCloseItemModal();
       }, 1000);
     }
@@ -151,55 +120,7 @@ const InventoryPage = () => {
       <Card className="p-2 mt-3">
         <Stack direction="horizontal" gap={3}>
           <h3 className="m-0 p-2 fs-5 fw-bold">Inventory Actions</h3>
-          <Button
-            variant="outline-primary"
-            className="p-2 ms-auto"
-            onClick={handleShowCategoryModal}
-          >
-            New Category
-          </Button>
-          <Modal
-            size="lg"
-            centered
-            show={showCategoryModal}
-            onHide={handleCloseCategoryModal}
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>New Category</Modal.Title>
-            </Modal.Header>
-
-            <Modal.Body>
-              <Form id="addCategoryForm" onSubmit={handleSubmitCategory}>
-                <Form.Group className="mb-3" controlId="categoryName">
-                  <Form.Label>Category Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter category name"
-                    required
-                    autoFocus
-                    autoComplete="off"
-                    value={categoryName}
-                    onChange={(e) => setCategoryName(e.target.value)}
-                  />
-                </Form.Group>
-                {error && <div className="alert alert-danger">{error}</div>}
-                {success && (
-                  <div className="alert alert-success">
-                    New category added successfully!
-                  </div>
-                )}
-              </Form>
-            </Modal.Body>
-
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloseCategoryModal}>
-                Close
-              </Button>
-              <Button variant="primary" type="submit" form="addCategoryForm">
-                Submit
-              </Button>
-            </Modal.Footer>
-          </Modal>
+          <NewCategoryModal refetchCategories={refetchCategories} />
 
           <Button variant="outline-primary" className="p-2" onClick={handleShowItemModal}>New Item</Button>
           <Modal size="lg" centered show={showItemModal} onHide={handleCloseItemModal}>
